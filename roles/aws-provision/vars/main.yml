@@ -1,0 +1,34 @@
+---
+
+ec2_subnet_ids: [] 
+ec2_instances: []
+
+palo_missing: true
+
+ec2_instance_types:
+  palo_byol:
+    owners: 679593333241
+    size: m5.xlarge
+    disk_space: 60
+    architecture: x86_64
+    filter: "PA-VM-AWS-9.1.0-h3-7064e142*"
+    os: panos
+    user: admin
+
+  junos_byol:
+    owners: 679593333241
+    size: m4.xlarge
+    os_type: linux
+    disk_space: 32
+    architecture: x86_64
+    filter: "vmx-nested-17.4R1-S2.2-3-ami*"
+    os: junos
+
+  ubuntu:
+    owners: 679593333241
+    size: t2.micro
+    os_type: linux
+    disk_space: 8
+    filter: "*ubuntu-bionic-18.04-amd64-server-20191113*"
+    architecture: x86_64
+    user: ubuntu

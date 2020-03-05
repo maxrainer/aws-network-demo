@@ -1,0 +1,77 @@
+---
+# add linux hosts in every subnet 
+
+- name: find ami for Ubuntu 18.04
+  ec2_ami_info:
+    region: "{{ ec2_region }}"
+    owners: "{{ ec2_instance_types.ubuntu.owners }}"
+    filters:
+      name: "{{ ec2_instance_types.ubuntu.filter }}"
+  register: ami
+
+- name: save ami Ubuntu server
+  set_fact:
+    ubuntu_ami: >
+      {{ ami.images | selectattr('name', 'defined') | sort(attribute='creation_date') | last }}
+
+- name: Create Ubuntu security group for VPC named {{ ec2_name_prefix }}-vpc
+  ec2_group:
+    name: "{{ ec2_name_prefix }}-ubuntu"
+    description: allow SSH to Linux
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+    rules:
+      - proto: tcp
+        cidr_ip: 0.0.0.0/0
+        to_port: 22
+        from_port: 22
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: create_ubuntu_sg
+  until: create_ubuntu_sg is not failed
+  retries: 5
+
+- debug: 
+    var: create_ubuntu_sg
+
+- name: tag security group
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ create_ubuntu_sg.group_id }}"
+    state: present
+    tags:
+      Name: "{{ ec2_name_prefix }}-jumpserver-sg"
+      Demo: "{{ ec2_name_prefix }}"
+
+- name: Create EC2 instance for Ubuntu jumpservers 
+  ec2:
+    id: "{{ ec2_jumpserver_id }}-{{ my_idx }}"
+    key_name: "{{ ec2_pem_key_name }}"
+    instance_type: "{{ ec2_instance_types.ubuntu.size }}"
+    image: "{{ ubuntu_ami.image_id }}"
+    vpc_subnet_id: "{{ item }}"
+    assign_public_ip: yes
+    region: "{{ ec2_region }}"
+    group: "{{ ec2_name_prefix }}-ubuntu"
+    wait: yes
+    wait_timeout: 600
+  register: ubuntu_output
+  loop: "{{ ec2_subnet_ids }}"
+  loop_control:
+    index_var: my_idx
+
+- debug: 
+    var: ubuntu_output 
+
+- name: Ensure tags are present for jumpserver
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ item }}"
+    state: present
+    tags:
+      Name: "{{ ec2_name_prefix }}-jumpserver"
+      Demo: "{{ ec2_name_prefix }}"
+      Function: jumpserver
+  loop:
+    - "{{ ubuntu_output.results[0].instance_ids }}"

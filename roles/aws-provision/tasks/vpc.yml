@@ -1,0 +1,53 @@
+---
+
+- name: Create AWS VPC {{ ec2_name_prefix }}-vpc
+  ec2_vpc_net:
+    name: "{{ ec2_name_prefix }}-vpc"
+    cidr_block: "{{ ec2_vpc_cidr }}"
+    region: "{{ ec2_region }}"
+  register: create_vpc
+  until: create_vpc is not failed
+  retries: 5
+
+- name: Create subnets for {{ ec2_name_prefix }}-vpc
+  ec2_vpc_subnet:
+    region: "{{ ec2_region }}"
+    az: "{{ ec2_az }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+    cidr: "{{ item }}"
+    wait_timeout: 600
+    resource_tags:
+      Name: "{{ ec2_name_prefix }}-subnet-{{ my_index }}"
+  register: create_subnet
+  until: create_subnet is not failed
+  retries: 15
+  loop: "{{ ec2_vpc_subnets }}"
+  loop_control:
+    index_var: my_index
+
+- name: set variables subnet IDs
+  set_fact: 
+    ec2_subnet_ids: "{{ ec2_subnet_ids + [item.subnet.id] }} "
+  loop: "{{ create_subnet.results }}"
+
+- name: vpc internet gateway is present for {{ create_vpc.vpc.id }}
+  ec2_vpc_igw:
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+  register: igw
+  until: igw is not failed
+  retries: 20
+
+- name: vpc public subnet route table is present for {{ create_vpc.vpc.id }}
+  ec2_vpc_route_table:
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+    subnets:
+      - "{{ ec2_subnet_ids[0] }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw.gateway_id }}"
+  register: routetable
+  until: routetable is not failed
+  retries: 5
+  when: igw.changed

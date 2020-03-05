@@ -1,0 +1,31 @@
+---
+
+teardown: false
+
+ec2_feature_vpc: true
+ec2_feature_jumpserver: true
+ec2_feature_palo: true
+
+ec2_wait: no
+ec2_pem_key_name: aws-demo
+ec2_pem_key_location: ~/.ssh/
+
+ec2_name_prefix: net-demo
+ec2_region: eu-central-1
+ec2_az: "{{ec2_region}}a"
+
+ec2_vpc_cidr: "172.16.0.0/16"
+ec2_vpc_subnets:
+  - "172.16.0.0/24"
+  - "172.16.1.0/24"
+  - "172.16.2.0/24"
+
+ec2_palo_id: palo-fw-5
+ec2_palo_net0: 0 
+ec2_palo_net1: 1
+
+ec2_jumpserver_id: jumpserver-1
+ec2_junos_id: junos-1
+
+
+

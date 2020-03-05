@@ -1,0 +1,24 @@
+---
+
+- include_tasks: 
+    file: vpc.yml
+  when: ec2_feature_vpc
+  tags: [always]
+
+- include_tasks: 
+    file: palo.yml
+  when: ec2_feature_palo
+  tags: [always]
+
+# - include_tasks:
+#     file: post_provision.yml
+#   tags: [always]
+
+- include_tasks:
+    file: jumpserver.yml
+  when: ec2_feature_jumpserver
+  tags: [always]
+
+- include_tasks:
+    file: teardown.yml
+  tags: [never, teardown]

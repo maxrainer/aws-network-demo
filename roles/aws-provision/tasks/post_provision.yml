@@ -1,0 +1,29 @@
+---
+# post provisioning  
+# configure https access etc. 
+
+- name: set inventory to Palo 
+  set_fact: 
+    ansible_host: "{{ palo_public_ipv4 }}"
+    ansible_connection: ssh
+    ansible_user: "{{ ec2_instance_types.palo_byol.user }}"
+    ansible_ssh_private_key_file: "{{ ec2_pem_key_location }}{{ec2_pem_key_name }}.pem"
+  when: ec2_feature_palo
+
+- name: build inventory for palo FW 
+  add_host:
+    hostname: "{{ palo_public_ipv4 }}"
+    ansible_user: "{{ ec2_instance_types.palo_byol.user }}"
+    ansible_ssh_private_key_file: "{{ ec2_pem_key_location }}{{ec2_pem_key_name }}.pem"
+    ansible_ssh_host: "{{ palo_public_ipv4 }}"
+  when: ec2_feature_palo
+
+- debug: 
+    var: hostvars[palo_public_ipv4]
+
+- name: ping Palo FW SSH port
+  wait_for_connection:
+    timeout: 5
+  delegate_to: "{{ palo_public_ipv4 }}"
+  when: ec2_feature_palo
+

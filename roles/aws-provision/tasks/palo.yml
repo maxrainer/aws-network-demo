@@ -1,0 +1,104 @@
+---
+
+- name: grab Palo instance running on EC2
+  ec2_instance_info:
+    region: "{{ ec2_region }}"
+    filters:
+      instance-state-name: running
+      tag:Name: "{{ ec2_name_prefix }}-palo-fw"
+  register: palo_instance_running
+
+- debug: 
+    var: palo_instance_running
+
+- name: set variables if Palo is running
+  set_fact:
+    palo_missing: False
+    palo_public_ipv4: "{{ palo_instance_running.instances[0].public_ip_address }}"
+  when:  palo_instance_running.instances | length > 0
+
+- name: find ami for Palo Alto FW BYOL
+  ec2_ami_info:
+    region: "{{ ec2_region }}"
+    owners: "{{ ec2_instance_types.palo_byol.owners }}"
+    filters:
+      name: "{{ ec2_instance_types.palo_byol.filter }}"
+  register: paloami
+  when: palo_missing
+
+- name: save ami for Palo FW
+  set_fact:
+    palo_ami: >
+      {{ paloami.images | selectattr('name', 'defined') | sort(attribute='creation_date') | last }}
+  when: palo_missing
+
+- name: Create Palo security group for VPC named {{ ec2_name_prefix }}-vpc
+  ec2_group:
+    name: "{{ ec2_name_prefix }}-palo-fw"
+    description: all traffic access
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+    rules:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: create_palo_sg
+  until: create_palo_sg is not failed
+  retries: 5
+  when: palo_missing
+
+- name: create private IP elastic network interfaces
+  ec2_eni:
+    region: "{{ ec2_region }}"
+    subnet_id: "{{ item }}"
+    state: present
+    security_groups: 
+      - "{{ ec2_name_prefix }}-palo-fw"
+  loop: 
+    - "{{ ec2_subnet_ids[ec2_palo_net0] }}"
+    - "{{ ec2_subnet_ids[ec2_palo_net1] }}"
+  register: palo_private_eni
+  when: palo_missing
+
+- name: Create EC2 instance for Palo Alto FW 
+  ec2:
+    id: "{{ ec2_palo_id }}"
+    key_name: "{{ ec2_pem_key_name }}"
+    instance_type: "{{ ec2_instance_types.palo_byol.size }}"
+    image: "{{ palo_ami.image_id }}"
+    region: "{{ ec2_region }}"
+    wait: yes
+    wait_timeout: 600
+    network_interfaces: 
+      - "{{ palo_private_eni.results[0].interface.id }}"
+      - "{{ palo_private_eni.results[1].interface.id }}"
+  register: palo_output
+  when: palo_missing
+
+- name: Ensure tags are present for Palo FW
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ item.1 }}"
+    state: present
+    tags:
+      Name: "{{ ec2_name_prefix }}-palo-fw"
+      Demo: "{{ ec2_name_prefix }}"
+      Function: firewall
+  with_indexed_items:
+    - "{{ palo_output.results.instance_ids }}"
+  when: palo_missing and palo_output.instance_ids is not none
+
+- name: create public IP for palo management access
+  ec2_eip:
+    region: "{{ ec2_region }}"
+    device_id: "{{ palo_private_eni.results[0].interface.id }}"
+    in_vpc: yes
+  register: palo_public_ip
+  when: palo_missing and palo_output.instance_ids is not none
+
+- name: store Palo credentials
+  set_fact:
+    palo_public_ipv4: "{{ palo_public_ip.public_ip }}"
+  when: palo_missing and palo_output.instance_ids is not none
