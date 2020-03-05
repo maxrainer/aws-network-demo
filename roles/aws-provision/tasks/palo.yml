@@ -87,7 +87,7 @@
       Demo: "{{ ec2_name_prefix }}"
       Function: firewall
   with_indexed_items:
-    - "{{ palo_output.results.instance_ids }}"
+    - "{{ palo_output.instance_ids }}"
   when: palo_missing and palo_output.instance_ids is not none
 
 - name: create public IP for palo management access

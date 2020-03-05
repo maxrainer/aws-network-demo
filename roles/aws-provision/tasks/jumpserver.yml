@@ -75,3 +75,6 @@
       Function: jumpserver
   loop:
     - "{{ ubuntu_output.results[0].instance_ids }}"
+  register: ubuntu_tag_output
+  until: ubuntu_tag_output is not failed
+  retries: 20
