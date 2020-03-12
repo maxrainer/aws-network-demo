@@ -8,6 +8,7 @@
   register: create_vpc
   until: create_vpc is not failed
   retries: 5
+  tags: [always, vpc]
 
 - name: Create subnets for {{ ec2_name_prefix }}-vpc
   ec2_vpc_subnet:
@@ -15,20 +16,22 @@
     az: "{{ ec2_az }}"
     vpc_id: "{{ create_vpc.vpc.id }}"
     cidr: "{{ item }}"
-    wait_timeout: 600
+    wait_timeout: 300
     resource_tags:
       Name: "{{ ec2_name_prefix }}-subnet-{{ my_index }}"
   register: create_subnet
   until: create_subnet is not failed
-  retries: 15
+  retries: 10
   loop: "{{ ec2_vpc_subnets }}"
   loop_control:
     index_var: my_index
+  tags: [always, vpc]
 
 - name: set variables subnet IDs
   set_fact: 
     ec2_subnet_ids: "{{ ec2_subnet_ids + [item.subnet.id] }} "
   loop: "{{ create_subnet.results }}"
+  tags: [always, vpc]
 
 - name: vpc internet gateway is present for {{ create_vpc.vpc.id }}
   ec2_vpc_igw:
@@ -36,7 +39,8 @@
     vpc_id: "{{ create_vpc.vpc.id }}"
   register: igw
   until: igw is not failed
-  retries: 20
+  retries: 10
+  tags: [always, vpc]
 
 - name: vpc public subnet route table is present for {{ create_vpc.vpc.id }}
   ec2_vpc_route_table:
@@ -51,3 +55,4 @@
   until: routetable is not failed
   retries: 5
   when: igw.changed
+  tags: [always, vpc]

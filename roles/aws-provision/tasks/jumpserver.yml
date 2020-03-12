@@ -25,15 +25,14 @@
         cidr_ip: 0.0.0.0/0
         to_port: 22
         from_port: 22
+      - proto: all
+        cidr_ip: 172.16.0.0/16
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
   register: create_ubuntu_sg
   until: create_ubuntu_sg is not failed
   retries: 5
-
-- debug: 
-    var: create_ubuntu_sg
 
 - name: tag security group
   ec2_tag:
@@ -61,20 +60,16 @@
   loop_control:
     index_var: my_idx
 
-- debug: 
-    var: ubuntu_output 
-
-- name: Ensure tags are present for jumpserver
+- name: Ensure tags for jumpservers are present
   ec2_tag:
     region: "{{ ec2_region }}"
-    resource: "{{ item }}"
+    resource: "{{ item.instances[0].id }}"
     state: present
     tags:
       Name: "{{ ec2_name_prefix }}-jumpserver"
       Demo: "{{ ec2_name_prefix }}"
       Function: jumpserver
-  loop:
-    - "{{ ubuntu_output.results[0].instance_ids }}"
+  loop: "{{ ubuntu_output.results }}"
   register: ubuntu_tag_output
   until: ubuntu_tag_output is not failed
-  retries: 20
+  retries: 10

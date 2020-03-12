@@ -49,6 +49,15 @@
   retries: 5
   when: palo_missing
 
+- name: tag security group Palo
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ create_palo_sg.group_id }}"
+    state: present
+    tags:
+      Name: "{{ ec2_name_prefix }}-palo-sg"
+      Demo: "{{ ec2_name_prefix }}"
+
 - name: create private IP elastic network interfaces
   ec2_eni:
     region: "{{ ec2_region }}"

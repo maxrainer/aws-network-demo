@@ -1,0 +1,34 @@
+---
+
+- name: set Ansible Tower License with REST 
+  uri:
+    url: "https://{{ ansible_host }}/api/v2/config/"
+    url_username: admin
+    url_password: "{{ tower_setup_admin_password }}"
+    method: POST
+    status_code: "200"
+    body_format: json
+    validate_certs: no
+    force_basic_auth: yes
+    body: "{{ lookup('template', '../templates/license.j2') }}"
+  tags: [tower, license, rest]
+
+- name: set RH username for license
+  tower_settings:
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: REDHAT_USERNAME
+    value: "{{ tower_redhat_username }}"
+  tags: [tower, license]
+
+- name: set RH password for license
+  tower_settings:
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: REDHAT_PASSWORD
+    value: "{{ tower_redhat_password }}"
+  tags: [tower, license]

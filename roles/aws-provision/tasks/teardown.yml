@@ -14,7 +14,7 @@
     var: all_workshop_nodes
   tags: [never, debug]
 
-- name: "destroy all EC2 instances for {{ ec2_name_prefix }}"
+- name: "terminate all EC2 instances for {{ ec2_name_prefix }}"
   ec2:
     region: "{{ ec2_region }}"
     state: absent
@@ -36,10 +36,34 @@
     var: vpc_net_facts
   tags: [never, debug]
 
-- name: use set fact for easier variables
+- name: use set fact for easier VPC ID variable
   set_fact:
     ec2_vpc_id: "{{vpc_net_facts.vpcs[0].id}}"
   when: vpc_net_facts.vpcs|length > 0 and ec2_security_group is undefined
+  tags: teardown
+
+- name: end play if vpc_id not defined
+  meta: end_play
+  when: ec2_vpc_id is not defined
+    
+- name: gather facts about interfaces
+  ec2_eni_info:
+    filters:
+      "vpc-id": "{{ ec2_vpc_id }}"
+    region: "{{ ec2_region }}"
+  register: eni_info
+  tags: teardown
+
+- debug: 
+    var: eni_info
+  tags: [never, debug]
+
+- name: "Delete interfaces for {{ ec2_name_prefix }}-vpc"
+  ec2_eni:
+    eni_id: "{{ item.id }}"
+    region: "{{ ec2_region }}"
+    state: absent
+  loop: "{{ eni_info.network_interfaces }}"
   tags: teardown
 
 - name: gather facts about security groups for VPC vpc-{{ ec2_name_prefix }}
@@ -60,30 +84,7 @@
     group_id: "{{ item.group_id }}"
     region: "{{ ec2_region }}"
     state: absent
-#  register: delete_sg
-  # until: delete_sg is not failed
-  # retries: 50
   loop: "{{ group_info.security_groups }}"
-  tags: teardown
-
-- name: gather facts about interfaces
-  ec2_eni_info:
-    filters:
-      "vpc-id": "{{ ec2_vpc_id }}"
-    region: "{{ ec2_region }}"
-  register: eni_info
-  tags: teardown
-
-- debug: 
-    var: eni_info
-  tags: [never, debug]
-
-- name: "Delete interfaces for {{ ec2_name_prefix }}-vpc"
-  ec2_eni:
-    eni_id: "{{ item.id }}"
-    region: "{{ ec2_region }}"
-    state: absent
-  loop: "{{ eni_info.network_interfaces }}"
   tags: teardown
     
 - name: Delete subnet for {{ ec2_name_prefix }}-vpc
@@ -106,7 +107,7 @@
   tags: teardown
 
 - name: grab route information for {{ ec2_name_prefix }} on {{ ec2_region }}
-  ec2_vpc_route_table_facts:
+  ec2_vpc_route_table_info:
     region: "{{ ec2_region }}"
     filters:
       vpc_id: "{{ec2_vpc_id}}"

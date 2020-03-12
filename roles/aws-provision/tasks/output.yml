@@ -1,0 +1,10 @@
+---
+
+- name: JUMPSERVER INFO
+  debug:
+    msg:
+      - "{{ item.instances[0].private_ip}}"
+  loop: "{{ ubuntu_output.results }}"
+  loop_control:
+    label: "{{ item.instances[0].dns_name }}"
+  when: ec2_feature_jumpserver

@@ -3,6 +3,11 @@
 - include_tasks: 
     file: vpc.yml
   when: ec2_feature_vpc
+  tags: [always, vpc]
+
+- include_tasks: 
+    file: csr.yml
+  when: ec2_feature_csr
   tags: [always]
 
 - include_tasks: 
@@ -10,15 +15,33 @@
   when: ec2_feature_palo
   tags: [always]
 
-# - include_tasks:
-#     file: post_provision.yml
-#   tags: [always]
-
 - include_tasks:
     file: jumpserver.yml
   when: ec2_feature_jumpserver
   tags: [always]
 
+- name: set variables for Linux Server 
+  set_fact: 
+    linux_instances: "{{ ec2_linux_server }}"
+  when: ec2_feature_server
+  tags: [always, server]
+
+- name: set up Linux Server 
+  include_tasks:
+    file: linux.yml
+    apply: 
+      tags: linux
+  when: ec2_feature_server
+  loop: "{{ linux_instances }}"
+  loop_control: 
+    loop_var: linux_instance
+    index_var: idx
+  tags: [always, server]
+
 - include_tasks:
     file: teardown.yml
   tags: [never, teardown]
+
+- include_tasks:
+    file: output.yml
+  tags: [always]

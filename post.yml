@@ -1,0 +1,9 @@
+---
+
+- name: post provisioning AWS network lab
+  hosts: function_tower
+  roles: 
+    -  ansible-tower-install 
+  
+
+  

@@ -1,0 +1,22 @@
+---
+# defaults file for ansible-tower-install
+
+tower_setup_version: 3.6.0-1
+tower_setup_dir: "/opt"
+
+# rhel, centos
+tower_os_type: rhel
+
+tower_setup_admin_password: "toweradmin"
+tower_setup_pg_database: "tower"
+tower_setup_pg_username: "tower"
+tower_setup_pg_password: "tower"
+tower_setup_rabbitmq_pass: "tower"
+
+tower_rhel_org_id: undefined
+tower_rhel_activation_key: rhel
+tower_redhat_username: rh_user 
+tower_redhat_password: changeme
+
+tower_license_date: 000000000
+tower_license_key: 01010101

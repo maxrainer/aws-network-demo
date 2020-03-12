@@ -1,0 +1,64 @@
+---
+
+- name: "create private IP elastic network interfaces Cisco CSR #{{ my_idx }}"
+  ec2_eni:
+    region: "{{ ec2_region }}"
+    subnet_id: "{{ ec2_subnet_ids[item] }}"
+    private_ip_address: "{{ csr_item.address[inner_idx] }}"
+    state: present
+    security_groups: 
+      - "{{ ec2_name_prefix }}-csr"
+  loop: "{{ csr_item.networks }}"
+  loop_control:
+    index_var: inner_idx
+  register: csr_private_eni
+
+- name: declare empty list for eni 
+  set_fact:
+    csr_eni_list: []
+
+- name: private eni to list 
+  set_fact:
+    csr_eni_list: "{{ csr_eni_list + [item.interface.id] }}"
+  loop: "{{ csr_private_eni.results }}"
+
+# - debug: 
+#     var: csr_eni_list
+
+- name: "Create EC2 instance for Cisco CSR 1000v #{{ my_idx }}"
+  ec2:
+    id: "{{ ec2_csr_id }}-{{ my_idx }}"
+    key_name: "{{ ec2_pem_key_name }}"
+    instance_type: "{{ ec2_instance_types.cisco_csr.size }}"
+    image: "{{ csr_ami.image_id }}"
+    region: "{{ ec2_region }}"
+    network_interfaces: "{{ csr_eni_list }}"
+    wait: yes
+    wait_timeout: 600
+  register: csr_output 
+
+- name: Ensure tags are present for Cisco CSR 1000v
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ item.1 }}"
+    state: present
+    tags:
+      Name: "{{ ec2_name_prefix }}-csr"
+      Demo: "{{ ec2_name_prefix }}"
+      Function: router
+  with_indexed_items:
+    - "{{ csr_output.instance_ids }}"
+  when: csr_output and csr_output.instance_ids is not none
+
+- name: create public IP for Cisco CSR 1000v management access
+  ec2_eip:
+    region: "{{ ec2_region }}"
+    device_id: "{{ csr_private_eni.results[0].interface.id }}"
+    in_vpc: yes
+  register: csr_public_ip
+  when: csr_output and csr_output.instance_ids is not none
+
+# - name: store Cisco CSR 1000v credentials
+#   set_fact:
+#     palo_public_ipv4: "{{ palo_public_ip.public_ip }}"
+#   when: palo_missing and palo_output.instance_ids is not none

@@ -5,7 +5,31 @@ ec2_instances: []
 
 palo_missing: true
 
+ec2_sg:
+  ssh:
+    proto: tcp
+    cidr_ip: 0.0.0.0/0
+    to_port: 22
+    from_port: 22
+  https: 
+    proto: tcp
+    cidr_ip: 0.0.0.0/0
+    to_port: 443
+    from_port: 443
+
+__default_size: t2.nano
+__default_function: server
+__default_security_rule: 
+  - "{{ ec2_sg.ssh }}"
+  
 ec2_instance_types:
+  cisco_csr:
+    owners: 679593333241
+    size: t2.medium
+    architecture: x86_64
+    filter: "CSR_AMI-cppbuild.17.1.1-byol-624f5bb1*"
+    os_type: linux
+
   palo_byol:
     owners: 679593333241
     size: m5.xlarge
@@ -32,3 +56,36 @@ ec2_instance_types:
     filter: "*ubuntu-bionic-18.04-amd64-server-20191113*"
     architecture: x86_64
     user: ubuntu
+
+  rhel8: 
+    owners: 309956199498
+    filter: "RHEL-8.1.0_HVM-20191029-x86_64-0*"
+    user: ec2-user
+
+  rhel7:
+    owners: 309956199498
+    filter: "RHEL-7.7_HVM-20191119-x86_64-2*"
+    user: ec2-user
+  
+  centos7:
+    owners: 679593333241
+    filter: "CentOS Linux 7 x86_64 HVM EBS ENA 1901_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-05713873c6794f575*" 
+    user: centos
+
+ec2_linux_server_tower:
+  name: Ansible Tower 1
+  short: tower
+  tag_function: tower
+  tag_name: ansible-tower1
+  instance_type: rhel8
+  size: t2.medium
+  public_ip: yes
+  volumes:
+    - device_name: /dev/sda1
+      volume_type: standard
+      delete_on_termination: true
+      volume_size: 20
+  security_groups:
+    - "{{ ec2_sg.ssh }}"
+    - "{{ ec2_sg.https }}"
+  network: 0

@@ -1,0 +1,65 @@
+---
+
+- name: grab Cisco CSR 1000v instance running on EC2
+  ec2_instance_info:
+    region: "{{ ec2_region }}"
+    filters:
+      instance-state-name: running
+      tag:Name: "{{ ec2_name_prefix }}-csr-1000v"
+  register: csr_instance_running
+
+# - name: set variables if Cisco CSR is running
+#   set_fact:
+#     csr_missing: False
+# #    palo_public_ipv4: "{{ palo_instance_running.instances[0].public_ip_address }}"
+#   when:  csr_instance_running.instances | length > 0
+
+- name: find ami for Cisco CSR 1000v BYOL
+  ec2_ami_info:
+    region: "{{ ec2_region }}"
+    owners: "{{ ec2_instance_types.cisco_csr.owners }}"
+    filters:
+      name: "{{ ec2_instance_types.cisco_csr.filter }}"
+  register: csrami
+#  when: csr_missing
+
+- name: save ami for Cisco CSR 1000v
+  set_fact:
+    csr_ami: >
+      {{ csrami.images | selectattr('name', 'defined') | sort(attribute='creation_date') | last }}
+#  when: palo_missing
+
+- name: Create CSR security group for VPC named {{ ec2_name_prefix }}-vpc
+  ec2_group:
+    name: "{{ ec2_name_prefix }}-csr"
+    description: allow SSH to Cisco CSR
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+    rules:
+      - proto: tcp
+        cidr_ip: 0.0.0.0/0
+        to_port: 22
+        from_port: 22
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: create_csr_sg
+  until: create_csr_sg is not failed
+  retries: 5
+
+- name: tag security group
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ create_csr_sg.group_id }}"
+    state: present
+    tags:
+      Name: "{{ ec2_name_prefix }}-csr-sg"
+      Demo: "{{ ec2_name_prefix }}"
+
+- name: create instances
+  include_tasks: 
+    file: csr_instance.yml
+  loop: "{{ ec2_csr_list }}"
+  loop_control:
+    loop_var: csr_item
+    index_var: my_idx

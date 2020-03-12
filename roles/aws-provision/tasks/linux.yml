@@ -1,0 +1,59 @@
+---
+# meta linux provisioner
+
+- name: set ec2_instance variable
+  set_fact:
+    play_instance: "{{ ec2_instance_types[linux_instance.instance_type] }}"
+  tags: [always, linux]
+
+- name: "find ami for Linux Server {{ linux_instance.name }}"
+  ec2_ami_info:
+    region: "{{ ec2_region }}"
+    owners: "{{ play_instance.owners }}"
+    filters:
+      name: "{{ play_instance.filter }}"
+  register: ami
+  tags: [always, linux]
+
+- name: save variables for Linux Server
+  set_fact:
+    security_instance: "{{ linux_instance }}"
+    linux_ami: >
+      {{ ami.images | selectattr('name', 'defined') | sort(attribute='creation_date') | last }}
+  tags: [always, linux]
+
+- name: include security group
+  include_tasks: 
+    file: security_group.yml
+  tags: [always, linux]
+
+- name: "create EC2 instance for Linux Server {{ linux_instance.name }}"
+  ec2:
+    id: "{{ linux_instance.short }}-{{ idx }}/{{ ec2_lab_count }}"
+    key_name: "{{ ec2_pem_key_name }}"
+    instance_type: "{{ linux_instance.size | default(__default_size) }}"
+    image: "{{ linux_ami.image_id }}"
+    vpc_subnet_id: "{{ ec2_subnet_ids[linux_instance.network] 
+      | default(ec2_subnet_ids[0]) }}"
+    assign_public_ip: "{{ linux_instance.public_ip | default(omit) }}"
+    region: "{{ ec2_region }}"
+    group: "{{ ec2_name_prefix }}-{{ linux_instance.short }}"
+    volumes: "{{ linux_instance.volumes | default(omit) }}"
+    wait: yes
+    wait_timeout: 600
+  register: linux_output
+  tags: [always, linux]
+
+- name: "ensure tags for Linux Server {{ linux_instance.name }}"
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ linux_output.instances[0].id }}"
+    state: present
+    tags:
+      Name: "{{ linux_instance.tag_name | default(linux_instance.short) }}"
+      Demo: "{{ ec2_name_prefix }}"
+      Function: "{{ linux_instance.tag_function | default(__default_function) }}"
+  register: linux_tag_output
+  until: linux_tag_output is not failed
+  retries: 10
+  tags: [always, linux]

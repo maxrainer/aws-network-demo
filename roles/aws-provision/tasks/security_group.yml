@@ -1,0 +1,27 @@
+---
+# takes: security_instance
+
+- name: "create security group for VPC named {{ security_instance.name }}"
+  ec2_group:
+    name: "{{ ec2_name_prefix }}-{{ security_instance.short }}"
+    description: "SG allow {{ security_instance.short}}"
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ create_vpc.vpc.id }}"
+    rules: "{{ security_instance.security_groups | default(__default_security_rule) }}"
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: create_sg
+  until: create_sg is not failed
+  retries: 5
+  tags: [always]
+
+- name: tag security group
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ create_sg.group_id }}"
+    state: present
+    tags:
+      Name: "{{ security_instance.tag_function | default(omit) }}"
+      Demo: "{{ ec2_name_prefix }}"
+  tags: [always]

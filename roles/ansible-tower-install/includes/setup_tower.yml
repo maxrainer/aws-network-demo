@@ -1,0 +1,9 @@
+---
+
+- name: setup shell script
+  become: true
+  shell: ./setup.sh
+  args:
+    chdir: "{{ tower_setup_dir }}/ansible-tower-setup-{{ tower_setup_version }}"
+
+...
