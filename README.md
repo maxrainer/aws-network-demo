@@ -1,7 +1,7 @@
-# **AWS Network Topo for Demos**
+# **Ansible - AWS virtual Network Topology**
 
 ## **Overview**
-This Ansible Playbook builds virtual networks on AWS Cloud. 
+This Ansible Playbook builds virtual networks on AWS Cloud. Real world WAN and security topologies are supported. 
 It's very simple to add currently non-supported network devices. 
 
 ## **Features**
@@ -23,7 +23,13 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 ##### **Special Servers**
 * Ansible Tower
 
-## **Usage**
+ ## **Usage**
+ 
+ 
+
+## **Examples**
+
+
 
 
 
