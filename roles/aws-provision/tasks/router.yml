@@ -1,0 +1,14 @@
+---
+# router.yml
+
+- name: set ec2_instance variables
+  set_fact:
+    _instance_type: "{{ ec2_instance_types[_instance_router.instance_type] }}"
+    _instance: "{{ _instance_router | combine(
+      { 'security_groups': [ec2_sg.all] }, 
+      { 'tag_function': 'router' } ) }}"
+  tags: [always]
+
+- name: include meta multinet
+  include_tasks: "{{ role_path }}/includes/meta_multinet.yml"
+

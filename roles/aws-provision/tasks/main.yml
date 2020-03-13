@@ -1,30 +1,10 @@
 ---
 
-- include_tasks: 
+- name: set up AWS VPC
+  include_tasks: 
     file: vpc.yml
   when: ec2_feature_vpc
   tags: [always, vpc]
-
-- include_tasks: 
-    file: csr.yml
-  when: ec2_feature_csr
-  tags: [always]
-
-- include_tasks: 
-    file: palo.yml
-  when: ec2_feature_palo
-  tags: [always]
-
-- include_tasks:
-    file: jumpserver.yml
-  when: ec2_feature_jumpserver
-  tags: [always]
-
-- name: set variables for Linux Server 
-  set_fact: 
-    linux_instances: "{{ ec2_linux_server }}"
-  when: ec2_feature_server
-  tags: [always, server]
 
 - name: set up Linux Server 
   include_tasks:
@@ -32,16 +12,36 @@
     apply: 
       tags: linux
   when: ec2_feature_server
-  loop: "{{ linux_instances }}"
+  loop: "{{ ec2_linux_server }}"
   loop_control: 
-    loop_var: linux_instance
+    loop_var: _instance
     index_var: idx
   tags: [always, server]
+
+- name: set up Routers
+  include_tasks: 
+    file: router.yml
+  when: ec2_feature_router
+  loop: "{{ ec2_routers }}"
+  loop_control:
+    loop_var: _instance_router
+    index_var: idx
+  tags: [always, router]
+
+- name: set up Firewalls 
+  include_tasks:
+    file: firewall.yml
+  when: ec2_feature_firewall
+  loop: "{{ ec2_firewalls }}"
+  loop_control:
+    loop_var: _instance_firewall
+    index_var: idx
+  tags: [always, firewall]
 
 - include_tasks:
     file: teardown.yml
   tags: [never, teardown]
 
-- include_tasks:
-    file: output.yml
-  tags: [always]
+# - include_tasks:
+#     file: output.yml
+#   tags: [always]

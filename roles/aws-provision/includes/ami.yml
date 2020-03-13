@@ -1,0 +1,16 @@
+---
+
+- name: "find ami for {{ _instance.name }}"
+  ec2_ami_info:
+    region: "{{ ec2_region }}"
+    owners: "{{ _instance_type.owners }}"
+    filters:
+      name: "{{ _instance_type.filter }}"
+  register: _ami
+  tags: [always]
+
+- name: save variables for Linux Server
+  set_fact:
+    _instance_ami: >
+      {{ _ami.images | selectattr('name', 'defined') | sort(attribute='creation_date') | last }}
+  tags: [always]

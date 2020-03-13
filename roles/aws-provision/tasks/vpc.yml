@@ -31,6 +31,8 @@
   set_fact: 
     ec2_subnet_ids: "{{ ec2_subnet_ids + [item.subnet.id] }} "
   loop: "{{ create_subnet.results }}"
+  loop_control:
+    label: "{{ item.subnet.id }}"
   tags: [always, vpc]
 
 - name: vpc internet gateway is present for {{ create_vpc.vpc.id }}

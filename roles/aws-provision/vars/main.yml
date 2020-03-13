@@ -1,9 +1,11 @@
 ---
 
-ec2_subnet_ids: [] 
-ec2_instances: []
 
-palo_missing: true
+# ec2_instances: []
+ec2_subnet_ids: [] 
+ec2_results: []
+
+#palo_missing: true
 
 ec2_sg:
   ssh:
@@ -16,6 +18,9 @@ ec2_sg:
     cidr_ip: 0.0.0.0/0
     to_port: 443
     from_port: 443
+  all: 
+    proto: all 
+    cidr_ip: 0.0.0.0/0
 
 __default_size: t2.nano
 __default_function: server
@@ -23,54 +28,72 @@ __default_security_rule:
   - "{{ ec2_sg.ssh }}"
   
 ec2_instance_types:
-  cisco_csr:
+  rt_cisco_csr:
+    version: 17.1
     owners: 679593333241
     size: t2.medium
-    architecture: x86_64
     filter: "CSR_AMI-cppbuild.17.1.1-byol-624f5bb1*"
-    os_type: linux
+    os: ios
+    user: ec2-user
 
-  palo_byol:
+  fw_palo:
+    version: 9.1
     owners: 679593333241
     size: m5.xlarge
-    disk_space: 60
-    architecture: x86_64
     filter: "PA-VM-AWS-9.1.0-h3-7064e142*"
     os: panos
     user: admin
+  
+  fw_fortigate:
+    version: 6.09
+    owners: 679593333241
+    filter: "FortiGate-VM64-AWS build0335 (6.0.9) GA-e5936f4a-0d69-479f-919c-d5e158bd4d12*"
+    size: t2.small
+    os: fortigate
+    user: admin
+
+  fw_junos_vsrx:
+    version: 19.3
+    owners: 679593333241
+    filter: "junos-vsrx3-x86-64-19.3R2.9-4d1495fd-4d1f-48d0-9ec6-b67794a58765*"
+    size: c5.large
+    os: junos
+    user: root
 
   junos_byol:
+    version: 19.4
     owners: 679593333241
     size: m4.xlarge
-    os_type: linux
-    disk_space: 32
-    architecture: x86_64
-    filter: "vmx-nested-17.4R1-S2.2-3-ami*"
+    filter: "vmx-nested-19.4R1.9-c8e2662f-22aa*"
     os: junos
+    user: 
 
   ubuntu:
+    version: 18.04
     owners: 679593333241
-    size: t2.micro
-    os_type: linux
-    disk_space: 8
     filter: "*ubuntu-bionic-18.04-amd64-server-20191113*"
-    architecture: x86_64
     user: ubuntu
+    os: linux
 
   rhel8: 
+    version: 8.1
     owners: 309956199498
     filter: "RHEL-8.1.0_HVM-20191029-x86_64-0*"
     user: ec2-user
+    os: linux
 
   rhel7:
+    version: 7.7
     owners: 309956199498
     filter: "RHEL-7.7_HVM-20191119-x86_64-2*"
     user: ec2-user
+    os: linux
   
   centos7:
     owners: 679593333241
     filter: "CentOS Linux 7 x86_64 HVM EBS ENA 1901_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-05713873c6794f575*" 
     user: centos
+    os: linux
 
 ec2_linux_server_tower:
   name: Ansible Tower 1

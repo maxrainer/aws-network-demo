@@ -1,13 +1,11 @@
 ---
 #
 # increase lab count for idempotent instances
-ec2_lab_count: 5
+ec2_lab_count: 0
 
-ec2_feature_server: true
-ec2_feature_palo: false
-ec2_feature_csr: false
-# tiny linux server in each subnet 
-ec2_feature_jumpserver: false
+ec2_feature_server: false
+ec2_feature_firewall: false
+ec2_feature_router: false
 
 ec2_wait: no
 ec2_pem_key_name: aws-demo
@@ -41,19 +39,20 @@ ec2_junos_id: "junos-{{ lab_count }}"
 #-----------------------------
 # mandatory variables: 
 # name: must be unique
-# tag_function: for special post provision features use one of:
-#   [tower, gitlab]
 # short: taken for unique security group
 # instance_type: must be key of ec2_instance_types (in vars/main.yml)
+# tag_function: for special post provision features use one of:
+#   [tower, gitlab]
 # 
 # default variables (optional): 
-# size: t2.nano
+# size: size of instance_type fallbacks to t2.nano
 # security_groups: SSH
 # volumes: omit
 # public_ip: no
 # network: 0
 # tag_funcion: server
 # tag_name: {{ short }}
+# tag_os: os tag of instance_type
 # pre defined servers (in vars/main.yml):
 #   - ec2_linux_server_tower
 # 
@@ -69,5 +68,34 @@ ec2_linux_server:
     instance_type: centos7
     public_ip: yes
 
-# do not turn off 
+
+# networks: (list)
+#   - subnet: (subnet list) mandatory
+#     address: (ip address) optional
+
+ec2_firewalls: 
+  - name: Palo Alto 1
+    short: palofw1
+    instance_type: palo_fw
+    public_ip: yes
+    networks:
+      - subnet: 0
+        address: 172.16.0.99
+      - subnet: 1
+        address: 172.16.1.99
+
+ec2_routers:
+  - name: Cisco CSR 1
+    short: csr1
+    instance_type: rt_cisco_csr_171
+    public_ip: yes
+    networks: 
+      - subnet: 0 
+        address: 172.16.0.200
+      - subnet: 1 
+        address: 172.16.0.201
+      - subnet: 3 
+        address: 172.16.0.202
+
+# normally do not turn off 
 ec2_feature_vpc: true

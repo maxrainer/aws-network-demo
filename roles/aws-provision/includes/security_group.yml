@@ -1,13 +1,13 @@
 ---
-# takes: security_instance
+# takes: _instance
 
-- name: "create security group for VPC named {{ security_instance.name }}"
+- name: "create security group for VPC named {{ _instance.name }}"
   ec2_group:
-    name: "{{ ec2_name_prefix }}-{{ security_instance.short }}"
-    description: "SG allow {{ security_instance.short}}"
+    name: "{{ ec2_name_prefix }}-{{ _instance.short }}"
+    description: "SG allow {{ _instance.short}}"
     region: "{{ ec2_region }}"
     vpc_id: "{{ create_vpc.vpc.id }}"
-    rules: "{{ security_instance.security_groups | default(__default_security_rule) }}"
+    rules: "{{ _instance.security_groups | default(__default_security_rule) }}"
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
@@ -22,6 +22,6 @@
     resource: "{{ create_sg.group_id }}"
     state: present
     tags:
-      Name: "{{ security_instance.tag_function | default(omit) }}"
+      Name: "{{ _instance.tag_function | default(omit) }}"
       Demo: "{{ ec2_name_prefix }}"
   tags: [always]

@@ -1,0 +1,64 @@
+---
+
+- name: declare empty list for eni and default size
+  set_fact:
+    _eni_list: []
+    default_size: "{{ _instance_type.size | default(__default_size) }}"
+
+- name: "create elastic network interfaces for {{ _instance.name }}" 
+  ec2_eni:
+    region: "{{ ec2_region }}"
+    subnet_id: "{{ ec2_subnet_ids[item.subnet] | default(ec2_subnet_ids[0]) }}"
+    private_ip_address: "{{ item.address | default(omit) }}"
+    state: present
+    security_groups: 
+      - "{{ ec2_name_prefix }}-{{ _instance.short }}"
+  loop: "{{ _instance.networks }}"
+  register: _private_eni
+  tags: [always]
+
+- name: eni to list variable
+  set_fact:
+    _eni_list: "{{ _eni_list + [item.interface.id] }}"
+  loop: "{{ _private_eni.results }}"
+  loop_control:
+    label: "{{ item.interface.id }}"
+  tags: [always]
+
+- name: "Create EC2 instance for {{ _instance.name }}"
+  ec2:
+    id: "{{ _instance.short }}-{{ idx }}/{{ ec2_lab_count }}"
+    key_name: "{{ ec2_pem_key_name }}"
+    instance_type: "{{ _instance.size | default(default_size) }}"
+    image: "{{ _instance_ami.image_id }}"
+    region: "{{ ec2_region }}"
+    network_interfaces: "{{ _eni_list }}"
+    wait: yes
+    wait_timeout: 600
+  register: _multinet_instance
+  tags: [always]
+
+- name: "ensure tags for {{ _instance.name }}"
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ _multinet_instance.instances[0].id }}"
+    state: present
+    tags:
+      Name: "{{ _instance.tag_name | default(_instance.short) }}"
+      Demo: "{{ ec2_name_prefix }}"
+      Function: "{{ _instance.tag_function | default(__default_function) }}"
+      OS: "{{ _instance.tag_os | default(_instance_type.os) }}"
+  register: _multinet_tag_output
+  until: _multinet_tag_output is not failed
+  retries: 10
+  tags: [always]
+
+- name: "create elastic public IPv4 address for for {{ _instance.name }}"
+  ec2_eip:
+    region: "{{ ec2_region }}"
+    device_id: "{{ _private_eni.results[0].interface.id }}"
+    in_vpc: yes
+  register: _multinet_public_ip
+  when: _instance.public_ip is defined and _instance.public_ip
+  tags: [always]
+

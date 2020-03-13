@@ -1,0 +1,16 @@
+---
+# multinet.yml
+
+- name: find EC2 ami 
+  include_tasks: "{{ role_path }}/includes/ami.yml"
+  tags: [always]
+
+- name: create security group
+  include_tasks: 
+    file: "{{ role_path }}/includes/security_group.yml"
+  tags: [always]
+
+- name: create EC2 instance with multi networks
+  include_tasks:
+    file: "{{ role_path }}/includes/instance_multinet.yml"
+  tags: [always]

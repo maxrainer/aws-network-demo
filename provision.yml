@@ -1,7 +1,7 @@
 ---
 
 - name: provision AWS network demo
-  hosts: all
+  hosts: aws
   connection: local
   gather_facts: no
   roles:
