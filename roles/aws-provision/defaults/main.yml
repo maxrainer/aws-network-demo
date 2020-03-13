@@ -87,15 +87,13 @@ ec2_firewalls:
 ec2_routers:
   - name: Cisco CSR 1
     short: csr1
-    instance_type: rt_cisco_csr_171
+    instance_type: rt_cisco_csr
     public_ip: yes
     networks: 
       - subnet: 0 
         address: 172.16.0.200
       - subnet: 1 
-        address: 172.16.0.201
-      - subnet: 3 
-        address: 172.16.0.202
+        address: 172.16.1.200
 
 # normally do not turn off 
 ec2_feature_vpc: true

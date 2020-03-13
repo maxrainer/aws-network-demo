@@ -60,13 +60,13 @@ ec2_instance_types:
     os: junos
     user: root
 
-  junos_byol:
+  rt_junos_vmx:
     version: 19.4
     owners: 679593333241
     size: m4.xlarge
     filter: "vmx-nested-19.4R1.9-c8e2662f-22aa*"
     os: junos
-    user: 
+    user: jnpr
 
   ubuntu:
     version: 18.04
