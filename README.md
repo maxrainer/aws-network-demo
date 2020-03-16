@@ -64,10 +64,8 @@ ec2_routers:
         address: 172.16.0.100
       - subnet: 1
         address: 172.16.1.100
-      - subnet: 2 
+      - subnet: 2
         address: 172.16.2.100
-      - subnet: 3
-        address: 172.16.3.100
   - name: JUNOS VMX 1
     short: vmx1
     instance_type: rt_junos_vmx
@@ -75,10 +73,10 @@ ec2_routers:
     networks:
       - subnet: 0
         address: 172.16.0.101
-      - subnet: 1
-        address: 172.16.1.101
-      - subnet: 2 
+      - subnet: 2
         address: 172.16.2.101
+      - subnet: 3 
+        address: 172.16.3.101
 
 ec2_firewalls:
   - name: Palo 1
