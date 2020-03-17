@@ -91,7 +91,7 @@ ec2_firewalls:
       - subnet: 1
         address: 172.16.1.99
 ```
-* AWS VPC Topo: 
+* AWS VPC Topo:  
 ![AWS VPC](./docs/fw_wan_simple/fw_wan_aws.jpg)
 
 
