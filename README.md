@@ -33,6 +33,8 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 
 ### **Firewall and WAN**
 
+![real world](./docs/fw_wan_simple/fw_wan_real.jpg). 
+
 variables: 
 ```YAML
 ---
@@ -89,10 +91,9 @@ ec2_firewalls:
       - subnet: 1
         address: 172.16.1.99
 ```
-Topo Firewall & WAN:  
+* AWS VPC Topo: 
 ![AWS VPC](./docs/fw_wan_simple/fw_wan_aws.jpg)
-* Real World Topo. 
-![real world](./docs/fw_wan_simple/fw_wan_real.jpg)
+
 
 
 
