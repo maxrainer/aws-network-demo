@@ -4,4 +4,10 @@
 - name: inventory_config
   include_tasks: "{{ role_path }}/includes/setup_tower.yml"
   listen: setup_tower
-  
+
+- name: restore Ansible Tower from backup file   
+  shell: "./setup.sh -e 'restore_backup_file={{ tower_backup_file }}' -i inventory -r"
+  args:
+    chdir: "{{ tower_setup_dir }}/ansible-tower-setup-{{ tower_setup_version }}"
+  become: true
+  when: tower_restore

@@ -1,0 +1,10 @@
+---
+# upgrade.yml
+
+- name: "set setup_version variable to {{ tower_upgrade_version }}"
+  set_fact:
+    tower_setup_version: "{{ tower_upgrade_version }}"
+
+- include_tasks:
+    file: install.yml
+

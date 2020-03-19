@@ -1,6 +1,6 @@
 ---
 
-- name: setup shell script
+- name: start install shell script
   become: true
   shell: ./setup.sh
   args:

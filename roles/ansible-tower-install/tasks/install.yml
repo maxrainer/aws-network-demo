@@ -1,0 +1,32 @@
+---
+# install.yml
+
+- name: pip install Ansible
+  become: true
+  pip: 
+    name: 
+      - ansible
+      - ansible-tower-cli
+
+- name: "download tower version: {{ tower_setup_version }} to server"
+  unarchive:
+    src: http://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-{{ tower_setup_version }}.tar.gz
+    dest: "{{ tower_setup_dir }}"
+    creates: "{{ tower_setup_dir }}/ansible-tower-setup-{{ tower_setup_version }}"
+    remote_src: true
+  become: true
+  tags:
+    - tower
+
+- name: local ansible inventory file
+  become: true
+  template:
+    backup: true
+    src: inventory.j2
+    dest: "{{ tower_setup_dir }}/ansible-tower-setup-{{ tower_setup_version }}/inventory"
+  notify: "setup_tower"
+  register: inventory_config
+  tags: 
+    - tower
+
+- meta: flush_handlers

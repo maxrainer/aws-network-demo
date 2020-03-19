@@ -1,8 +1,15 @@
 ---
 # defaults file for ansible-tower-install
 
-tower_setup_version: 3.6.0-1
+tower_backup: false
+tower_restore: false
+tower_license: false
+tower_upgrade: false
+
+tower_setup_version: 3.6.2-1
 tower_setup_dir: "/opt"
+# this must not be 'latest'
+tower_upgrade_version: 3.6.3-1
 
 # rhel, centos
 tower_os_type: rhel
@@ -20,3 +27,7 @@ tower_redhat_password: changeme
 
 tower_license_date: 000000000
 tower_license_key: 01010101
+
+tower_local_backup_file: ./files/tower-backup-latest.tar.gz
+tower_backup_file: /tmp/tower-backup-restore-ansible.tar.gz
+tower_backup_dest: /tmp/

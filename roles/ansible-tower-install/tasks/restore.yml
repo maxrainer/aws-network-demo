@@ -1,0 +1,10 @@
+---
+
+- name: copy local backup file to Tower (forces overwrite)
+  copy: 
+    src: "{{ tower_local_backup_file }}"
+    dest: "{{ tower_backup_file }}"
+    mode: '0664'
+  notify: restore Ansible Tower from backup file
+
+- meta: flush_handlers
