@@ -48,6 +48,7 @@
       Demo: "{{ ec2_name_prefix }}"
       Function: "{{ _instance.tag_function | default(__default_function) }}"
       OS: "{{ _instance.tag_os | default(_instance_type.os) }}"
+      LabCount: "{{ ec2_lab_count | default(0) }}"
   register: _multinet_tag_output
   until: _multinet_tag_output is not failed
   retries: 10

@@ -1,0 +1,21 @@
+---
+ansible_connection: network_cli
+ansible_network_os: ios
+
+gi2:  "{{ network_interfaces | json_query('[?attachment.device_index==`1`] | [0]') }}"
+gi3:  "{{ network_interfaces | json_query('[?attachment.device_index==`2`] | [0]') }}"
+
+interface_config:
+    - name: GigabitEthernet2
+      ipv4:
+        address: "{{ gi2.private_ip_address }}/24"
+      description: "WAN interface, id: {{ gi2.network_interface_id }}"
+      enabled: True
+    
+    - name: GigabitEthernet3
+      ipv4:
+        address: "{{ gi3.private_ip_address }}/24"
+      description: "local LAN, ID: {{ gi3.network_interface_id }}"
+      enabled: True
+
+ping_destinations: ['172.16.1.100']

@@ -1,10 +1,12 @@
 ---
 # defaults file for ansible-tower-install
 
+tower_install: true
 tower_backup: false
 tower_restore: false
 tower_license: false
 tower_upgrade: false
+tower_customize: false 
 
 tower_setup_version: 3.6.2-1
 tower_setup_dir: "/opt"
@@ -13,6 +15,9 @@ tower_upgrade_version: 3.6.3-1
 
 # rhel, centos
 tower_os_type: rhel
+
+tower_pem_key_name: ""
+tower_pem_key_location: ""
 
 tower_setup_admin_password: "toweradmin"
 tower_setup_pg_database: "tower"

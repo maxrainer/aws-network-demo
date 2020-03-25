@@ -1,26 +1,8 @@
 ---
 
-
 # ec2_instances: []
 ec2_subnet_ids: [] 
 ec2_results: []
-
-#palo_missing: true
-
-ec2_sg:
-  ssh:
-    proto: tcp
-    cidr_ip: 0.0.0.0/0
-    to_port: 22
-    from_port: 22
-  https: 
-    proto: tcp
-    cidr_ip: 0.0.0.0/0
-    to_port: 443
-    from_port: 443
-  all: 
-    proto: all 
-    cidr_ip: 0.0.0.0/0
 
 __default_size: t2.nano
 __default_function: server
@@ -112,3 +94,37 @@ ec2_linux_server_tower:
     - "{{ ec2_sg.ssh }}"
     - "{{ ec2_sg.https }}"
   network: 0
+
+ec2_linux_server_bastion:
+  name: Bastion Server 1
+  short: bastion
+  tag_function: bastion
+  tag_name: linux-bastion1
+  instance_type: centos7
+  size: t2.micro
+  public_ip: yes
+  security_groups:
+    - "{{ ec2_sg.ssh }}"
+    - "{{ ec2_sg.https }}"
+    - "{{ ec2_sg.http }}"
+  network: 0
+
+ec2_sg:
+  ssh:
+    proto: tcp
+    cidr_ip: 0.0.0.0/0
+    to_port: 22
+    from_port: 22
+  https: 
+    proto: tcp
+    cidr_ip: 0.0.0.0/0
+    to_port: 443
+    from_port: 443
+  http: 
+    proto: tcp
+    cidr_ip: 0.0.0.0/0
+    to_port: 80
+    from_port: 80
+  all: 
+    proto: all 
+    cidr_ip: 0.0.0.0/0

@@ -1,5 +1,11 @@
 ---
 
+- name: take variables from shared vars
+  set_fact: 
+    ec2_pem_key_name: "{{ pem_key_name | default(omit) }}"
+    ec2_pem_key_location: "{{ pem_key_location | default(omit) }}"
+  when: pem_key_name is defined and pem_key_location is defined
+
 - name: set up AWS VPC
   include_tasks: 
     file: vpc.yml

@@ -1,0 +1,47 @@
+---
+# inventories.yml
+
+- name: customize inventories
+  tower_inventory:
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    organization: Default
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+  loop: "{{ __tower_inventories }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: customize inventory sources
+  tower_inventory_source:
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: "{{ item.name }}"
+    source: "{{ item.source | default(omit) }}"
+    source_project: "{{ item.source_project | default(omit) }}"
+    credential: "{{ item.credential | default(omit) }}"
+    source_path: "{{ item.source_path | default(omit) }}"
+    inventory: "{{ item.inventory }}"
+    overwrite: "{{ item.overwrite | default(omit) }}"
+    update_on_launch: "{{ item.update_on_launch | default(omit) }}"
+  loop: "{{ __tower_inventory_sources }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: customize inventory groups
+  tower_group: 
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+    variables: "{{ item.variables | default(omit) }}"
+    inventory: "{{ item.inventory}}"
+  loop: "{{ __tower_groups }}"
+  loop_control:
+    label: "{{ item.name }}"

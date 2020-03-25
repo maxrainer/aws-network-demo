@@ -1,0 +1,15 @@
+---
+
+- name: take variables from shared vars
+  set_fact: 
+    bastion_pem_key_name: "{{ pem_key_name | default(omit) }}"
+    bastion_pem_key_location: "{{ pem_key_location | default(omit) }}"
+  when: pem_key_name is defined and pem_key_location is defined
+
+- name: copy ssh private key to bastion server
+  copy:
+    src: "{{ bastion_pem_key_location }}{{ bastion_pem_key_name }}.pem"
+    dest: "~/.ssh/{{ bastion_pem_key_name }}.pem"
+    mode: '0600'
+  
+  

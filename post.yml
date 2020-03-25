@@ -1,9 +1,21 @@
 ---
+  
+- name: post provisioning AWS instance Bastion Server
+  hosts: function_bastion
+  vars: 
+    ansible_ssh_user: centos
+  vars_files:
+    - vars/shared_vars.yml
+  roles: 
+    -  bastion-server
+  tags: [bastion]
 
-- name: post provisioning AWS network lab
+- name: post provisioning AWS instance Ansible Tower
   hosts: function_tower
+  vars_files:
+    - vars/shared_vars.yml
   roles: 
     -  ansible-tower-install 
-  
+  tags: [tower]
 
   

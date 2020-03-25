@@ -1,0 +1,6 @@
+---
+
+bastion_feature_squid: true
+
+bastion_pem_key_name: aws-demo
+bastion_pem_key_location: ~/.ssh/

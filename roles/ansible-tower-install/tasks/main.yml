@@ -1,16 +1,24 @@
 ---
 # tasks file for ansible-tower-install
 
+- name: take variables from shared vars
+  set_fact: 
+    tower_pem_key_name: "{{ pem_key_name | default(omit) }}"
+    tower_pem_key_location: "{{ pem_key_location | default(omit) }}"
+    tower_pem_key: "{{ pem_key_location }}{{ pem_key_name }}.pem"
+  when: pem_key_name is defined and pem_key_location is defined
+
 - include_tasks: 
     file: rhel.yml
-  when: tower_os_type == 'rhel'
+  when: tower_os_type == 'rhel' and tower_install
 
 - include_tasks: 
     file: centos.yml
-  when: tower_os_type == 'centos'
+  when: tower_os_type == 'centos' and tower_install
 
 - include_tasks:
     file: install.yml
+  when: tower_install
 
 - include_tasks:
     file: restore.yml
@@ -27,3 +35,7 @@
 - include_tasks:
     file: upgrade.yml
   when: tower_upgrade
+
+- include_tasks: 
+    file: customize.yml
+  when: tower_customize

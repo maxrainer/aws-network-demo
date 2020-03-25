@@ -1,3 +1,0 @@
-[aws]
-localhost  ansible_python_interpreter=/Users/mrainer/venv/aws/bin/python3
-

@@ -25,9 +25,14 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * Gitlab Server (under constrution)
 
 
- ## **Usage**
+## **Usage**
  
- 
+* Provisioning AWS Cloud 
+  ansible-playbook -i inventory/aws_rt3_wan.inv provision.yml     
+* Post Installation Tasks 
+  ansible-playbook -i lab.aws_ec2.yml post.yml 
+* Teardown everything from AWS Cloud
+  ansible-playbook -i inventory/aws_rt3_wan.inv -t teardown --skip-tags=always provision.yml 
 
 ## **Examples**
 
@@ -94,9 +99,12 @@ ec2_firewalls:
 * AWS VPC Topo:  
 ![AWS VPC](./docs/fw_wan_simple/fw_wan_aws.jpg)
 
+## **Prerequests**
 
-
-
+* ansible >= 2.9
+* boto3 >= 1.12
+* genie, pyats >= 20.1 
+* paramiko >= 2.7.1
 
 
 

@@ -1,0 +1,21 @@
+---
+
+- name: customize job template 
+  tower_job_template:
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+    job_type: "{{ item.job_type | default(omit) }}"
+    inventory: "{{ item.inventory | default(omit) }}"
+    project: "{{ item.project | default(omit) }}"
+    playbook: "{{ item.playbook | default(omit) }}"
+    credential: "{{ item.credential | default(omit) }}"
+    job_tags: "{{ item.job_tags | default(omit) }}"
+    skip_tags: "{{ item.skip_tags | default(omit) }}"
+  loop: "{{ __tower_job_template }}"
+  loop_control:
+    label: "{{ item.name }}"
+  

@@ -1,0 +1,4 @@
+---
+
+pem_key_name: aws-demo
+pem_key_location: ~/.ssh/

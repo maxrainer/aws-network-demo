@@ -1,0 +1,13 @@
+---
+
+- name: credentials 
+  include_tasks: "{{ role_path }}/includes/credentials.yml"
+
+- name: GitHub projects
+  include_tasks: "{{ role_path }}/includes/project.yml"
+
+- name: inventories
+  include_tasks: "{{ role_path }}/includes/inventory.yml"
+
+- name: job template
+  include_tasks: "{{ role_path }}/includes/job_template.yml"
