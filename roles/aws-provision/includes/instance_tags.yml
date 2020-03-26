@@ -1,0 +1,23 @@
+---
+
+- name: combine variable for tags 
+  set_fact: 
+    _inst_tags: "{{ __tags | combine(_instance.tags) }}"
+  when: _instance.tags is defined
+
+- name: set variable for tags 
+  set_fact: 
+    _inst_tags: "{{ __tags }}"
+  when: _instance.tags is not defined
+
+# single
+- name: "ensure tags for {{ _instance.name }}"
+  ec2_tag:
+    region: "{{ ec2_region }}"
+    resource: "{{ _created_instance.instances[0].id }}"
+    state: present
+    tags: "{{ _inst_tags }}"
+  register: _singlemulti_tag_output
+  until: _singlemulti_tag_output is not failed
+  retries: 10
+  tags: [always]

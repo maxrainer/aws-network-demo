@@ -28,6 +28,7 @@
     inventory: "{{ item.inventory }}"
     overwrite: "{{ item.overwrite | default(omit) }}"
     update_on_launch: "{{ item.update_on_launch | default(omit) }}"
+    update_cache_timeout: 3600
   loop: "{{ __tower_inventory_sources }}"
   loop_control:
     label: "{{ item.name }}"

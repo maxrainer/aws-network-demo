@@ -1,0 +1,28 @@
+---
+# create virtual environments on tower
+
+- name: create directory for venv
+  file: 
+    path: "{{ __tower_venv_path }}"
+    mode: '0755'
+    state: 'directory'   
+  become: true    
+    
+- name: set CUSTOM_VENV_PATHS on tower
+  tower_settings:  
+    tower_host: "{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: "CUSTOM_VENV_PATHS"
+    value: "['{{ __tower_venv_path }}']"
+
+- name: create virtual environments  
+  pip: 
+    virtualenv: "{{ __tower_venv_path }}/{{ item.name }}"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+    name: "{{ item.pip }}"
+  become: true
+  loop: "{{ __tower_venvs }}"
+  loop_control:
+    label: "{{ item.name }}"

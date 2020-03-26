@@ -37,5 +37,9 @@
   when: tower_upgrade
 
 - include_tasks: 
+    file: venv.yml 
+  when: tower_venv
+
+- include_tasks: 
     file: customize.yml
   when: tower_customize

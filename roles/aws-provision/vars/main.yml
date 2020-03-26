@@ -128,3 +128,10 @@ ec2_sg:
   all: 
     proto: all 
     cidr_ip: 0.0.0.0/0
+
+__tags: 
+  Name: "{{ _instance.tag_name | default(_instance.short) }}"
+  Demo: "{{ ec2_name_prefix }}"
+  Function: "{{ _instance.tag_function | default(__default_function) }}"
+  OS: "{{ _instance.tag_os | default(_instance_type.os) }}"
+  LabCount: "{{ ec2_lab_count | default(0) }}"

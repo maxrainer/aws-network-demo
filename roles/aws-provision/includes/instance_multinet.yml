@@ -35,23 +35,12 @@
     network_interfaces: "{{ _eni_list }}"
     wait: yes
     wait_timeout: 600
-  register: _multinet_instance
+  register: _created_instance
   tags: [always]
 
-- name: "ensure tags for {{ _instance.name }}"
-  ec2_tag:
-    region: "{{ ec2_region }}"
-    resource: "{{ _multinet_instance.instances[0].id }}"
-    state: present
-    tags:
-      Name: "{{ _instance.tag_name | default(_instance.short) }}"
-      Demo: "{{ ec2_name_prefix }}"
-      Function: "{{ _instance.tag_function | default(__default_function) }}"
-      OS: "{{ _instance.tag_os | default(_instance_type.os) }}"
-      LabCount: "{{ ec2_lab_count | default(0) }}"
-  register: _multinet_tag_output
-  until: _multinet_tag_output is not failed
-  retries: 10
+- name: include tags
+  include_tasks:
+    file: "{{ role_path }}/includes/instance_tags.yml"
   tags: [always]
 
 - name: "create elastic public IPv4 address for for {{ _instance.name }}"

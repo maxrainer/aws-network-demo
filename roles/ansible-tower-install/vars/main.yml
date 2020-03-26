@@ -1,3 +1,10 @@
+---
+# tower vars.yml 
+
+__tower_venv_path: /opt/venvs
+__tower_venvs:
+  - name: genie
+    pip: ['psutil','ansible','paramiko','genie==19.12','pyats==19.12','jmespath'] 
 
 __tower_projects: 
   - name: network-lab
@@ -53,7 +60,41 @@ __tower_job_template:
     credential: cisco ec2
     job_tags: rollback, interface
     skip_tags: config
-    
-
-
+  - name: IOS Router BGP Configuration 
+    description: Cisco Router WAN BGP configuration 
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab 
+    playbook: aws_router.yml
+    credential: cisco ec2
+    job_tags: bgp
+  - name: IOS Router BGP rollback
+    description: Cisco Router WAN BGP configuration 
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab 
+    playbook: aws_router.yml
+    credential: cisco ec2
+    job_tags: bgp,rollback
+    skip_tags: config
+  - name: IOS Router facts 
+    description: gather facts and debug output them
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws_router.yml 
+    credential: cisco ec2
+    job_tags: facts
+    verbosity: 2
+  - name: IOS show command parser
+    description: structured output for IOS commands (genie parser)
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws_router.yml 
+    credential: cisco ec2
+    job_tags: genie
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_cmd_parser_survey.json') }}"
+    custom_virtualenv: "{{ __tower_venv_path }}/genie"
 

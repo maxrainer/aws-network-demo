@@ -4,6 +4,7 @@ ansible_network_os: ios
 
 gi2:  "{{ network_interfaces | json_query('[?attachment.device_index==`1`] | [0]') }}"
 gi3:  "{{ network_interfaces | json_query('[?attachment.device_index==`2`] | [0]') }}"
+bgp_peers: "{{ tags.bgp_peers | default(omit) }}"
 
 interface_config:
     - name: GigabitEthernet2
@@ -18,4 +19,9 @@ interface_config:
       description: "local LAN, ID: {{ gi3.network_interface_id }}"
       enabled: True
 
-ping_destinations: ['172.16.1.100']
+ping_destinations: "{{ bgp_peers }}"
+ios_bgp_peers: "{{ bgp_peers }}"
+
+ios_bgp_networks: 
+  - prefix: "{{ (gi3.private_ip_address + '/24') | ipaddr('network') }}"
+    masklen: 24
