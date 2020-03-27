@@ -1,5 +1,5 @@
 *retry
-group_vars/
 host_vars/
 inventory/
 roles/*/files/tower-backup*
+vaults*

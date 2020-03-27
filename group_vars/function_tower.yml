@@ -1,0 +1,18 @@
+---
+
+tower_setup_admin_password: changeme
+#tower_setup_pg_database: "awx"
+#tower_setup_pg_username: "awx"
+tower_setup_pg_password: changeme
+tower_setup_rabbitmq_pass: changeme
+
+tower_rhel_org_id: "12345678"
+tower_rhel_activation_key: your_key
+
+tower_redhat_username: username
+tower_redhat_password: changeme
+tower_license_date: 12345678
+tower_license_key: changeme
+
+tower_aws_access_key: access_key
+tower_aws_secret_key: changeme
