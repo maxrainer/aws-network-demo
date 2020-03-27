@@ -1,6 +1,6 @@
 ---
 
-- name: customize job template 
+- name: customize job templates
   tower_job_template:
     tower_host: "{{ ansible_host }}"
     tower_username: admin
@@ -20,6 +20,10 @@
     survey_spec: "{{ item.survey_spec | default(omit) }}"
     survey_enabled: "{{ item.survey_enabled | default(omit) }}"
   loop: "{{ __tower_job_template }}"
+  register: _template_result 
+  until: _template_result is not failed
+  delay: 5
+  retries: 12
   loop_control:
     label: "{{ item.name }}"
   

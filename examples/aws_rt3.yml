@@ -1,0 +1,64 @@
+---
+ec2_lab_count: 20
+ec2_feature_server: true
+ec2_feature_router: true
+
+ec2_vpc_subnets:
+  - "172.16.0.0/24"   # management
+  - "172.16.1.0/24"   # WAN
+  - "172.16.2.0/24"   # headquarter LAN
+  - "172.16.3.0/24"   # branch 1 LAN
+  - "172.16.4.0/24"   # branch 2 LAN
+
+ec2_linux_server:
+  - "{{ ec2_linux_server_tower }}"
+  - "{{ ec2_linux_server_bastion }}"
+  # - name: headquarter jump
+  #   short: hq1
+  #   instance_type: centos7
+  #   network: 2
+  
+ec2_routers:
+  - name: CSR 1000-1
+    short: csr1
+    instance_type: rt_cisco_csr
+    public_ip: no
+    networks:
+      - subnet: 0
+        address: 172.16.0.101
+      - subnet: 1
+        address: 172.16.1.101
+      - subnet: 2 
+        address: 172.16.2.101
+    tags: 
+      bgp_peers:
+        - 172.16.1.102
+        - 172.16.1.103
+  - name: CSR 1000-2
+    short: csr2
+    instance_type: rt_cisco_csr
+    public_ip: no
+    networks:
+      - subnet: 0
+        address: 172.16.0.102
+      - subnet: 1
+        address: 172.16.1.102
+      - subnet: 3 
+        address: 172.16.3.102
+    tags:
+      bgp_peers:
+        - 172.16.1.101
+  - name: CSR 1000-3
+    short: csr3
+    instance_type: rt_cisco_csr
+    public_ip: no
+    networks:
+      - subnet: 0
+        address: 172.16.0.103
+      - subnet: 1
+        address: 172.16.1.103
+      - subnet: 4
+        address: 172.16.4.103
+    tags:
+      bgp_peers:
+        - 172.16.1.101

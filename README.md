@@ -102,12 +102,14 @@ ec2_firewalls:
 ![AWS VPC](./docs/fw_wan_simple/fw_wan_aws.jpg)
 
 ## **Prerequests**
-
 * ansible >= 2.9
 * boto3 >= 1.12
 * genie, pyats >= 20.1 
 * paramiko >= 2.7.1
 
-
-
-
+## **open caveats**
+* dynamic DNS support
+* SQUID reverse Proxy on bastion
+* easy SSH to devices through bastion
+* F5 example
+* dual Firewall example

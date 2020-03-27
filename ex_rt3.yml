@@ -1,0 +1,11 @@
+---
+
+- name: AWS provision example 'simple WAN - 3 IOS Router'
+  hosts: all
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars/shared_vars.yml
+    - examples/aws_rt3.yml
+  roles:
+    - aws-provision

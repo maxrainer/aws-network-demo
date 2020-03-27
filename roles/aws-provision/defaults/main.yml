@@ -16,16 +16,12 @@ ec2_region: eu-central-1
 ec2_az: "{{ec2_region}}a"
 
 ec2_vpc_cidr: "172.16.0.0/16"
-ec2_vpc_subnets:
-  - "172.16.0.0/24"
-  - "172.16.1.0/24"
-  - "172.16.2.0/24"
-#  - "172.16.3.0/24"
-
-ec2_jumpserver_id: "jumpserver-{{ lab_count }}"
-ec2_junos_id: "junos-{{ lab_count }}"
+ec2_vpc_subnets: []
+  # - "172.16.0.0/24"
+  # - "172.16.1.0/24"
 
 #-----------------------------
+# ec2_linux_server
 # mandatory variables: 
 # name: must be unique
 # short: taken for unique security group
@@ -44,55 +40,53 @@ ec2_junos_id: "junos-{{ lab_count }}"
 # tag_os: os tag of instance_type
 # pre defined servers (in vars/main.yml):
 #   - ec2_linux_server_tower
-ec2_linux_server:
-  - "{{ ec2_linux_server_tower }}"
-#  - "{{ ec2_linux_server_git }}"
-  - name: tiny Jump1
-    short: tj1
-    instance_type: centos7
-    network: 1
-  - name: tiny Jump 2
-    short: tj2
-    instance_type: centos7
-    public_ip: yes
+ec2_linux_server: []
+  # - "{{ ec2_linux_server_tower }}"
+  # - "{{ ec2_linux_server_git }}"
+  # - name: tiny Jump1
+  #   short: tj1
+  #   instance_type: centos7
+  #   network: 1
 
 ################################
+# ec2_firewalls
 # mandatory: 
 # name, short, instance_type
 # optional:
 # custome tags: 'bgp_peers(list)'
 # networks: [{subnet: id, address: ipv4}]
 # public_ip: default(no)
-ec2_firewalls: 
-  - name: Palo Alto 1
-    short: palofw1
-    instance_type: palo_fw
-    public_ip: yes
-    networks:
-      - subnet: 0
-        address: 172.16.0.99
-      - subnet: 1
-        address: 172.16.1.99
+ec2_firewalls: []
+  # - name: Palo Alto 1
+  #   short: palofw1
+  #   instance_type: palo_fw
+  #   public_ip: yes
+  #   networks:
+  #     - subnet: 0
+  #       address: 172.16.0.99
+  #     - subnet: 1
+  #       address: 172.16.1.99
 
 ################################
+# ec2_routers
 # mandatory: 
 # name, short, instance_type
 # optional:
 # custome tags: 'bgp_peers(list)'
 # networks: [{subnet: id, address: ipv4}]
 # public_ip: default(no)
-ec2_routers:
-  - name: Cisco CSR 1
-    short: csr1
-    instance_type: rt_cisco_csr
-    public_ip: yes
-    networks: 
-      - subnet: 0 
-        address: 172.16.0.200
-      - subnet: 1 
-        address: 172.16.1.200
-    tags:
-      - bgp_peers: "['172.16.1.199']"
+ec2_routers: []
+  # - name: Cisco CSR 1
+  #   short: csr1
+  #   instance_type: rt_cisco_csr
+  #   public_ip: yes
+  #   networks: 
+  #     - subnet: 0 
+  #       address: 172.16.0.200
+  #     - subnet: 1 
+  #       address: 172.16.1.200
+  #   tags:
+  #     - bgp_peers: "['172.16.1.199']"
 
 # normally do not turn off 
 ec2_feature_vpc: true

@@ -4,6 +4,7 @@
   hosts: function_bastion
   vars: 
     ansible_ssh_user: centos
+    ansible_python_interpreter: '/usr/bin/python'
   vars_files:
     - vars/shared_vars.yml
   roles: 
@@ -12,6 +13,8 @@
 
 - name: post provisioning AWS instance Ansible Tower
   hosts: function_tower
+  vars: 
+    ansible_python_interpreter: '/usr/libexec/platform-python'
   vars_files:
     - vars/shared_vars.yml
   roles: 
