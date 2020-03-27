@@ -15,6 +15,10 @@ First create
 * ansible-playbook -i inventory/aws_rt3_wan.inv provision.yml 
 * ansible-playbook -i lab.aws_ec2.yml post.yml 
 
+## **Topology**
+
+[WAN](RT3_WAN.jpg)
+
 ## **Prerequests**
 * AWS Account 
 * Subscription for IOS CSR 1000v BYOL 
@@ -26,3 +30,4 @@ pip:
 * ansible-tower-cli  
 * boto3
 * botocore
+
