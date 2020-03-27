@@ -27,11 +27,11 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 ## **Usage**
 * find variable definitions here:
 [variables](./roles/aws-provision/defaults/main.yml)
-* define your network topology here:
+* define your network topology in ./group_vars/aws.yml
 [aws](./group_vars/aws.yml) 
 * start AWS Cloud provisioning
   ansible-playbook -i localhost.inv provision.yml
-* define your Ansible Tower variables here:
+* define your Ansible Tower variables in ./group_vars/function_tower.yml
 [function_tower](./group_vars/function_tower.yml)
 * start Post Installation Tasks 
   ansible-playbook -i lab.aws_ec2.yml post.yml 
@@ -41,6 +41,14 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 ## **ready to use Examples**
 
 [simple WAN - 3 Cisco IOS Router](./docs/RT3_WAN.md)
+
+## **further informations**
+#### **installed Projects on Tower**
+[network-labs](https://github.com/maxrainer/ansible-network-labs)
+
+#### **howto add new Devices**
+* device definitions can be found in ./roles/aws-provision/vars/main.yml
+[static vars](./roles/aws-provision/vars/main.yml)
 
 ## **Prerequests**
 * ansible >= 2.9
@@ -55,3 +63,4 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * F5 example
 * dual Firewall example
 * molecule testing
+* template module bug (can't set venv) (https://github.com/ansible/ansible/issues/68492)

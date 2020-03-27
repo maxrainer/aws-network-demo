@@ -96,5 +96,5 @@ __tower_job_template:
     job_tags: genie
     survey_enabled: yes
     survey_spec: "{{ lookup('file', role_path+'/files/ios_cmd_parser_survey.json') }}"
-    custom_virtualenv: "{{ __tower_venv_path }}/genie"
+#    custom_virtualenv: "{{ __tower_venv_path }}/genie"
 
