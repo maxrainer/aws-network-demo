@@ -14,6 +14,8 @@ Simple WAN Network Configurations with 3 Cisco IOS Routers (CSR 1000v).
 First create 
 * ansible-playbook -i inventory/aws_rt3_wan.inv provision.yml 
 * ansible-playbook -i lab.aws_ec2.yml post.yml 
+Teardown
+* ansible-playbook -i inventory/aws_rt3_wan.inv -t teardown --skip-tags=always provision.yml 
 
 ## **Topology**
 
