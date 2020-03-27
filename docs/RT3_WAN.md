@@ -17,7 +17,7 @@ First create
 
 ## **Topology**
 
-[WAN](RT3_WAN.jpg)
+![WAN](RT3_WAN.jpg)
 
 ## **Prerequests**
 * AWS Account 
