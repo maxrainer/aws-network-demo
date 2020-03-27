@@ -28,11 +28,11 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * find variable definitions here:
 [variables](./roles/aws-provision/defaults/main.yml)
 * define your network topology in ./group_vars/aws.yml
-[aws](./group_vars/aws.yml) 
+[aws.yml](./group_vars/aws.yml) 
 * start AWS Cloud provisioning
   ansible-playbook -i localhost.inv provision.yml
 * define your Ansible Tower variables in ./group_vars/function_tower.yml
-[function_tower](./group_vars/function_tower.yml)
+[function_tower.yml](./group_vars/function_tower.yml)
 * start Post Installation Tasks 
   ansible-playbook -i lab.aws_ec2.yml post.yml 
 * Teardown everything from AWS Cloud
@@ -47,8 +47,8 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 [network-labs](https://github.com/maxrainer/ansible-network-labs)
 
 #### **howto add new Devices**
-* device definitions can be found in ./roles/aws-provision/vars/main.yml
-[static vars](./roles/aws-provision/vars/main.yml)
+* device definitions can be found in
+[./roles/aws-provision/vars/main.yml](./roles/aws-provision/vars/main.yml)
 
 ## **Prerequests**
 * ansible >= 2.9
