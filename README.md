@@ -36,6 +36,8 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 
 ## **Examples**
 
+[simple WAN - 3 Cisco IOS Router](./docs/RT3_WAN.md)
+
 ### **Firewall and WAN**
 
 ![real world](./docs/fw_wan_simple/fw_wan_real.jpg). 
