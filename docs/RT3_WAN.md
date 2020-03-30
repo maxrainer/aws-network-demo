@@ -20,13 +20,13 @@ Simple WAN Network Configurations with 3 Cisco IOS Routers (CSR 1000v).
 
 ## **Usage**
 #### **Create**
-* ansible-playbook -i localhost.inv ex_rt3.yml
+* `ansible-playbook -i localhost.inv ex_rt3.yml`
 * define your Ansible Tower variables in ./group_vars/function_tower.yml
 [function_tower](./group_vars/function_tower.yml)
 or add new vault file and add extra-vars
-* ansible-playbook -i lab.aws_ec2.yml -e'@vaults/function_tower.yml' post.yml 
+* `ansible-playbook -i lab.aws_ec2.yml -e'@vaults/function_tower.yml' post.yml`
 #### **Teardown**
-* ansible-playbook -i localhost.inv -t teardown --skip-tags=always ex_rt3.yml
+* `ansible-playbook -i localhost.inv -t teardown --skip-tags=always ex_rt3.yml`
 
 ## **Topology**
 
