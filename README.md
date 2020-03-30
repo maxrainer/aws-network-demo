@@ -34,9 +34,9 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * define your Ansible Tower variables in ./group_vars/function_tower.yml
 [function_tower.yml](./group_vars/function_tower.yml)
 * start Post Installation Tasks 
-  ansible-playbook -i lab.aws_ec2.yml post.yml 
-* Teardown everything from AWS Cloud
-  ansible-playbook -i localhost.inv -t teardown --skip-tags=always provision.yml 
+  `ansible-playbook -i lab.aws_ec2.yml post.yml`
+* Teardown everything from AWS Cloud  md
+  `ansible-playbook -i localhost.inv -t teardown --skip-tags=always provision.yml`
 
 ## **ready to use Examples**
 
