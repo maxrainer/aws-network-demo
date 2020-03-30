@@ -76,6 +76,13 @@ ec2_instance_types:
     filter: "CentOS Linux 7 x86_64 HVM EBS ENA 1901_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-05713873c6794f575*" 
     user: centos
     os: linux
+  
+  f5: 
+    owners: 679593333241
+    size: t2.medium
+    filter: "F5 BIGIP-15.0.1.1-0.0.3 BYOL-All Modules 1Boot Loc-191118135625-0d93696e*"
+    user: admin
+    os: f5
 
 ec2_linux_server_tower:
   name: Ansible Tower 1

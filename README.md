@@ -64,3 +64,4 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * dual Firewall example
 * molecule testing
 * template module bug (can't set venv) (https://github.com/ansible/ansible/issues/68492)
+* make roles independent from playbook
