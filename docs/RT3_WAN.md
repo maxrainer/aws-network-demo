@@ -4,7 +4,7 @@
 Simple WAN Network Configurations with 3 Cisco IOS Routers (CSR 1000v).
 
 ## **Features**
-### **Templates**
+### **Topics**
 * IOS device facts
 * Interface configuration (description, admin status)
 * L3 IPv4 configuration

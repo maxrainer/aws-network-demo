@@ -30,7 +30,7 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * define your network topology in ./group_vars/aws.yml
 [aws.yml](./group_vars/aws.yml) 
 * start AWS Cloud provisioning
-  ansible-playbook -i localhost.inv provision.yml
+`ansible-playbook -i localhost.inv provision.yml`
 * define your Ansible Tower variables in ./group_vars/function_tower.yml
 [function_tower.yml](./group_vars/function_tower.yml)
 * start Post Installation Tasks 
@@ -57,6 +57,7 @@ Routers, Firewalls can have multiple interfaces in different subnets.
 * paramiko >= 2.7.1
 
 ## **open caveats**
+* only Region europe-central1 supported
 * dynamic DNS support
 * SQUID reverse Proxy on bastion
 * easy SSH to devices through bastion
