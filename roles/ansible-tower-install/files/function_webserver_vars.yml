@@ -1,0 +1,5 @@
+---
+demo_hostname: "{{ tags.Name }}"
+f5_webserver_host: "{{ private_ip_address }}"
+f5_webserver_port: 80
+f5_webserver_name: "{{ public_dns_name }}"

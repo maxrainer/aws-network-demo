@@ -1,0 +1,27 @@
+---
+
+- name: set F5 admin password
+  bigip_command:
+    provider:
+      user: admin
+      ssh_keyfile: "{{ aws_pem_key }}"
+      transport: cli
+      server_port: 22
+      server: "{{ ansible_host }}"
+    commands: "modify auth user admin password {{ aws_f5_password }}"
+    warn: no
+  register: _f5_password
+
+- name: save F5 sys config 
+  bigip_command:
+    provider:
+      user: admin
+      ssh_keyfile: "{{ aws_pem_key }}"
+      transport: cli
+      server_port: 22
+      server: "{{ ansible_host }}"
+    commands: "save sys config"
+    warn: no
+
+
+

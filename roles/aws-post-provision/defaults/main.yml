@@ -1,0 +1,8 @@
+---
+
+aws_pem_key_name: ""
+aws_pem_key_location: ""
+ 
+aws_f5_password: changeme
+aws_f5_license: 123456
+

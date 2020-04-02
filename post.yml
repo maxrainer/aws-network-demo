@@ -8,7 +8,7 @@
   vars_files:
     - vars/shared_vars.yml
   roles: 
-    -  bastion-server
+    - bastion-server
   tags: [bastion]
 
 - name: post provisioning AWS instance Ansible Tower
@@ -17,8 +17,22 @@
     ansible_python_interpreter: '/usr/libexec/platform-python'
   vars_files:
     - vars/shared_vars.yml
+    - vars/aws-vault.yml
   roles: 
-    -  ansible-tower-install 
+    - ansible-tower-install 
   tags: [tower]
+
+- name: post provisioning AWS F5
+  hosts: function_loadbalancer
+  vars:
+    ansible_user: admin
+  vars_files:
+    - vars/shared_vars.yml
+    - vars/aws-vault.yml
+  roles:
+    - aws-post-provision
+  tags: [f5]
+  gather_facts: no
+  connection: local
 
   

@@ -1,0 +1,15 @@
+---
+ansible_connection: local
+
+f5_license: "{{ aws_f5_license }}"
+f5_provider_server_port: 8443
+f5_provider_password: "{{ aws_f5_password }}"
+
+{% raw %}
+f5_provider:
+  server: "{{ ansible_host }}"
+  user: admin
+  validate_certs: no
+  password: "{{ f5_provider_password }}"
+  server_port: "{{ f5_provider_server_port }}"
+{% endraw %}

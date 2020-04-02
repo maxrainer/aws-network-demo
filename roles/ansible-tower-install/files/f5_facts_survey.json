@@ -1,0 +1,17 @@
+{
+  "name": "",
+  "description": "",
+  "spec": [
+      {
+          "question_name": "fact subsets",
+          "question_description": "https://docs.ansible.com/ansible/latest/modules/bigip_device_info_module.html#bigip-device-info-module",
+          "required": true,
+          "type": "multiplechoice",
+          "variable": "f5_license_state",
+          "min": null,
+          "max": null,
+          "default": "system-info",
+          "choices": "system-info\nall\ninterfaces\nprofiles\ndevices\nvirtual-servers\nvirtual-addresses"
+      }
+  ]
+}

@@ -9,10 +9,11 @@
   register: all_workshop_nodes
   tags: teardown
 
-- name: debug test
+- name: debug all workshop nodes
   debug:
     var: all_workshop_nodes
-  tags: [never, debug]
+    verbosity: 2
+  tags: teardown
 
 - name: "terminate all EC2 instances for {{ ec2_name_prefix }}"
   ec2:
@@ -54,9 +55,11 @@
   register: eni_info
   tags: teardown
 
-- debug: 
+- name: eni infos
+  debug: 
     var: eni_info
-  tags: [never, debug]
+    verbosity: 2
+  tags: teardown
 
 - name: "Delete interfaces for {{ ec2_name_prefix }}-vpc"
   ec2_eni:

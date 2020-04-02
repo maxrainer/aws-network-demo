@@ -7,39 +7,51 @@
     tower_pem_key_location: "{{ pem_key_location | default(omit) }}"
     tower_pem_key: "{{ pem_key_location }}{{ pem_key_name }}.pem"
   when: pem_key_name is defined and pem_key_location is defined
+  tags: [always]
 
-- include_tasks: 
+- name: add RHEL relevant tasks
+  include_tasks: 
     file: rhel.yml
   when: tower_os_type == 'rhel' and tower_install
+  tags: [always, install]
 
 - include_tasks: 
     file: centos.yml
   when: tower_os_type == 'centos' and tower_install
+  tags: [always, install]
 
 - include_tasks:
     file: install.yml
   when: tower_install
+  tags: [always, install]
 
 - include_tasks:
     file: restore.yml
   when: tower_restore
+  tags: [always, install]
 
 - include_tasks: 
     file: license.yml
   when: tower_license
+  tags: [always, install]
 
 - include_tasks:
     file: backup.yml
   when: tower_upgrade or tower_backup
+  tags: [always, install]
 
 - include_tasks:
     file: upgrade.yml
   when: tower_upgrade
+  tags: [always, install]
 
 - include_tasks: 
     file: venv.yml 
   when: tower_venv
+  tags: [always, install]
 
-- include_tasks: 
+- name: customize tower
+  include_tasks: 
     file: customize.yml
   when: tower_customize
+  tags: [always, customize]

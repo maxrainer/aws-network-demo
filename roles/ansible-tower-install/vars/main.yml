@@ -21,6 +21,10 @@ __tower_credentials:
     username: ec2-user
     kind: ssh
     ssh_key_data: "{{ lookup('file', tower_pem_key) }}"
+  - name: centos
+    username: centos
+    kind: ssh
+    ssh_key_data: "{{ lookup('file', tower_pem_key) }}"
 
 __tower_inventories: 
   - name: aws net-demo
@@ -41,6 +45,14 @@ __tower_groups:
     inventory: aws net-demo
     description: Cisco IOS Router 
     variables: "{{ lookup('file', role_path+'/files/function_router_vars.yml') }}"
+  - name: function_loadbalancer
+    inventory: aws net-demo 
+    description: F5 Big-IP 
+    variables: "{{ lookup('template', role_path+'/templates/function_loadbalancer_vars.yml.j2') }}"
+  - name: function_webserver
+    inventory: aws net-demo
+    description: needed as webserver to connect 
+    variables: "{{ lookup('file', role_path+'/files/function_webserver_vars.yml') }}"
 
 __tower_job_template:
   - name: IOS Interface L3 Configuration
@@ -97,4 +109,37 @@ __tower_job_template:
     survey_enabled: yes
     survey_spec: "{{ lookup('file', role_path+'/files/ios_cmd_parser_survey.json') }}"
 #    custom_virtualenv: "{{ __tower_venv_path }}/genie"
+  - name: F5 Big-IP handle license
+    description: install, revoke license
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-f5.yml
+    job_tags: license
+    job_type: run
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/f5_license_survey.json') }}"
+  - name: F5 Big-IP gather facts
+    description: get facts from a list
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-f5.yml
+    job_tags: facts
+    job_type: run
+    survey_enabled: yes
+    verbosity: 2
+    survey_spec: "{{ lookup('file', role_path+'/files/f5_facts_survey.json') }}"
+  - name: F5 Big-IP load balance webservers
+    description: get facts from a list
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-f5.yml
+    job_tags: balance
+    job_type: run
+  - name: provisioning webservers
+    description: apache and default website
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-webserver.yml
+    job_type: run
+    credential: centos
 
