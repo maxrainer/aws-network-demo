@@ -28,14 +28,16 @@
 - name: Get the VPC ID for {{ ec2_name_prefix }}
   ec2_vpc_net_info:
     filters:
-      "tag:Name": "{{ ec2_name_prefix }}-vpc"
+      "tag:Name": "{{ aws_name_prefix }}-vpc"
     region: "{{ ec2_region }}"
   register: vpc_net_facts
   tags: teardown
 
-- debug: 
+- name: debug vpc facts
+  debug: 
     var: vpc_net_facts
-  tags: [never, debug]
+    verbosity: 2
+  tags: teardown
 
 - name: use set fact for easier VPC ID variable
   set_fact:
@@ -46,7 +48,47 @@
 - name: end play if vpc_id not defined
   meta: end_play
   when: ec2_vpc_id is not defined
-    
+  tags: teardown
+
+- name: remove private zone and private DNS entries on route53 
+  block:
+  - name: grab route53 zone id 
+    route53_zone: 
+      zone: "{{ aws_route53_private_zone }}"
+      vpc_id: "{{ ec2_vpc_id }}"
+      vpc_region: "{{ ec2_region }}"
+    register: _private_zone
+  - name: grab route53 record infos
+    route53_info:
+      type: A
+      query: record_sets
+      hosted_zone_id: "{{ _private_zone.zone_id }}"
+      start_record_name: "*.{{ aws_route53_private_zone }}"
+    register: _dns_records
+  - name: debug route53 record sets
+    debug:
+      msg: "{{ _dns_records }}"
+      verbosity: 2
+  - name: remove all record sets from route53
+    route53:
+      state: absent
+      zone: "{{ aws_route53_private_zone }}"
+      record: "{{ item.Name }}"
+      type: A 
+      value: "{{ item.ResourceRecords[0].Value }}"
+      ttl: "{{ item.TTL }}"
+      private_zone: yes
+    loop: "{{ _dns_records.ResourceRecordSets }}"
+    when: _dns_records.ResourceRecordSets is defined
+  - name: remove private DNS zone on route53
+    route53_zone: 
+      state: absent
+      zone: "{{ aws_route53_private_zone }}"
+      vpc_id: "{{ ec2_vpc_id }}"
+      vpc_region: "{{ ec2_region }}"
+  when: aws_route53_private_zone is defined and aws_route53_private_zone != ""
+  tags: teardown  
+
 - name: gather facts about interfaces
   ec2_eni_info:
     filters:
@@ -78,9 +120,11 @@
   register: group_info 
   tags: teardown
 
-- debug: 
+- name: debug security_groups
+  debug: 
      var: group_info
-  tags: [never, debug]
+     verbosity: 2
+  tags: teardown
 
 - name: Delete security groups for VPC vpc-{{ ec2_name_prefix }}
   ec2_group:

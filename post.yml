@@ -1,4 +1,14 @@
 ---
+
+- name: register devices to route53 DNS 
+  hosts: all
+  roles: 
+    - aws-route53
+  vars_files:
+    - vars/shared_vars.yml
+  connection: local
+  gather_facts: false
+  tags: [route53, dns]
   
 - name: post provisioning AWS instance Bastion Server
   hosts: function_bastion

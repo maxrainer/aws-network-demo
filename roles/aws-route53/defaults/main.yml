@@ -1,0 +1,6 @@
+---
+
+aws_route53_private_zone: 'yourdomain.priv'
+aws_route53_public_zone: 'yourdomain.net'
+aws_name_prefix: changeme
+aws_region: changeme

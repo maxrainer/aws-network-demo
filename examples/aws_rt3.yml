@@ -1,5 +1,5 @@
 ---
-ec2_lab_count: 21
+ec2_lab_count: 23
 ec2_feature_server: true
 ec2_feature_router: true
 

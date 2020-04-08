@@ -1,6 +1,6 @@
 ---
 
-ec2_lab_count: 22
+ec2_lab_count: 23
 ec2_feature_server: true
 ec2_feature_firewall: true
 
