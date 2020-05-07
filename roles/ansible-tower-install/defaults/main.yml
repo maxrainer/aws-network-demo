@@ -9,6 +9,7 @@ tower_venv: true
 tower_backup: false
 tower_restore: false
 tower_upgrade: false
+tower_rhel_subscription: true
 
 tower_setup_version: 3.6.3-1
 tower_setup_dir: "/opt"
@@ -38,3 +39,8 @@ tower_license_key: 01010101
 tower_local_backup_file: ./files/tower-backup-latest.tar.gz
 tower_backup_file: /tmp/tower-backup-restore-ansible.tar.gz
 tower_backup_dest: /tmp/
+
+tower_github_personal_access_token: ""
+
+aws_f5_license: ""
+aws_f5_password: ""

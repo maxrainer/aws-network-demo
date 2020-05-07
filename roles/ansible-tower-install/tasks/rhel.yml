@@ -7,6 +7,7 @@
     auto_attach: true
     activationkey: "{{ tower_rhel_activation_key }}"
   become: true
+  when: tower_rhel_subscription
 
 - name: install prerequests for RHEL
   become: true

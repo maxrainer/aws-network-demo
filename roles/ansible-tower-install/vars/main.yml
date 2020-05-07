@@ -25,6 +25,9 @@ __tower_credentials:
     username: centos
     kind: ssh
     ssh_key_data: "{{ lookup('file', tower_pem_key) }}"
+#  no kind available for GitHub Access Token
+#  - name: github access token
+
 
 __tower_inventories: 
   - name: aws net-demo
