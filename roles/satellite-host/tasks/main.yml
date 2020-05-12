@@ -1,0 +1,24 @@
+---
+- name: set hostname
+  hostname: 
+    name: "{{ satellite_hostname }}"
+
+- name: Retrieve katello-rhsm-consumer from the Satellite Server
+  get_url:
+    url: "http://{{ satellite_server }}/pub/katello-rhsm-consumer"
+    dest: /tmp/katello-rhsm-consumer
+    mode: '0777'
+  register: _wget_katello 
+
+- name: Run katello-rhsm-consumer
+  shell: /tmp/katello-rhsm-consumer
+  when: _wget_katello.changed
+
+## subscription-manager register --org="Default_Organization" \
+## --activationkey=ak-Reg_To_Dev_EL7
+- name: Register the host
+  redhat_subscription: 
+    state: present
+    username: "{{ satellite_username }}"
+    password: "{{ satellite_password }}"
+    auto_attach: true

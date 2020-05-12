@@ -1,0 +1,7 @@
+---
+
+satellite_hostname: localhost.localdomain
+
+satellite_server: satellite.example.com
+satellite_username: user
+satellite_password: changeme

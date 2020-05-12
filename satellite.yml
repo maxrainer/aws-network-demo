@@ -1,0 +1,7 @@
+---
+
+- name: Playbook RHEL subscription register at Satellite 
+  hosts: function_satellite_client
+  roles: 
+    - satellite-host 
+  
