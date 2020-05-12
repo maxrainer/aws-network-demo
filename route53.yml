@@ -1,0 +1,10 @@
+---
+
+- name: register devices to route53 DNS 
+  hosts: all
+  roles: 
+    - aws-route53
+  vars_files:
+    - vars/shared_vars.yml
+  connection: local
+  gather_facts: false

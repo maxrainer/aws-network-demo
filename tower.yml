@@ -1,9 +1,8 @@
 ---
 
 - name: Provisioning Ansible Tower
-  hosts: tower
+  hosts: function_tower
   vars: 
     ansible_python_interpreter: '/usr/libexec/platform-python'
   roles: 
     - ansible-tower-install 
-  tags: [tower]
