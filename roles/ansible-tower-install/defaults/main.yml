@@ -21,6 +21,7 @@ tower_os_type: rhel
 
 tower_pem_key_name: ""
 tower_pem_key_location: ""
+tower_pem_key: ""
 
 tower_setup_admin_password: "toweradmin"
 tower_setup_pg_database: "tower"

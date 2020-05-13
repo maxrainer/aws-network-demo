@@ -1,11 +1,5 @@
 ---
 
-satellite_hostname: rhel7.0100.kvm.maxrainer.net
-
-satellite_server: satellite.kvm.maxrainer.net
-satellite_username: admin 
-satellite_password: gruen100KVM1
-
 
 tower_setup_admin_password: changeme
 #tower_setup_pg_database: "awx"

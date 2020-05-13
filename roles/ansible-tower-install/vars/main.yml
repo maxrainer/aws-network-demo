@@ -20,11 +20,11 @@ __tower_credentials:
   - name: cisco ec2
     username: ec2-user
     kind: ssh
-    ssh_key_data: "{{ lookup('file', tower_pem_key) }}"
+    ssh_key_data: "{{ lookup('file', tower_pem_key, errors='warn') }}"
   - name: centos
     username: centos
     kind: ssh
-    ssh_key_data: "{{ lookup('file', tower_pem_key) }}"
+    ssh_key_data: "{{ lookup('file', tower_pem_key, errors='warn') }}"
 #  no kind available for GitHub Access Token
 #  - name: github access token
 
