@@ -2,6 +2,7 @@
 - name: set hostname
   hostname: 
     name: "{{ satellite_hostname }}"
+  become: true
 
 - name: Retrieve katello-rhsm-consumer from the Satellite Server
   get_url:
