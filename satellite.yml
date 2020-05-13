@@ -1,7 +1,7 @@
 ---
 
 - name: Playbook RHEL subscription register at Satellite 
-  hosts: function_tower
+  hosts: function_rhel
   roles: 
     - satellite-host 
   
