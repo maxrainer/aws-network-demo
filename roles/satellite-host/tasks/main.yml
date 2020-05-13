@@ -24,3 +24,4 @@
     username: "{{ satellite_username }}"
     password: "{{ satellite_password }}"
     auto_attach: true
+  become: true
