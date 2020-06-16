@@ -15,36 +15,37 @@ ec2_linux_server:
   - name: tiny RHEL
     short: rhel001
     instance_type: rhel8
+    tag_function: rhel
     size: t2.micro
-    public_ip: no
+    public_ip: yes
   
-# ec2_routers:
-#   - name: CSR 1000-1
-#     short: csr1
-#     instance_type: rt_cisco_csr
-#     public_ip: no
-#     networks:
-#       - subnet: 0
-#         address: 172.16.0.101
-#       - subnet: 1
-#         address: 172.16.1.101
-#       - subnet: 2 
-#         address: 172.16.2.101
-#     tags: 
-#       bgp_peers:
-#         - 172.16.1.102
-#         - 172.16.1.103
-#   - name: CSR 1000-2
-#     short: csr2
-#     instance_type: rt_cisco_csr
-#     public_ip: no
-#     networks:
-#       - subnet: 0
-#         address: 172.16.0.102
-#       - subnet: 1
-#         address: 172.16.1.102
-#       - subnet: 3 
-#         address: 172.16.3.102
-#     tags:
-#       bgp_peers:
-#         - 172.16.1.101
+ec2_routers:
+  - name: CSR 1000-1
+    short: csr1
+    instance_type: rt_cisco_csr
+    public_ip: no
+    networks:
+      - subnet: 0
+        address: 172.16.0.101
+      - subnet: 1
+        address: 172.16.1.101
+      - subnet: 2 
+        address: 172.16.2.101
+    tags: 
+      bgp_peers:
+        - 172.16.1.102
+        - 172.16.1.103
+  - name: CSR 1000-2
+    short: csr2
+    instance_type: rt_cisco_csr
+    public_ip: no
+    networks:
+      - subnet: 0
+        address: 172.16.0.102
+      - subnet: 1
+        address: 172.16.1.102
+      - subnet: 3 
+        address: 172.16.3.102
+    tags:
+      bgp_peers:
+        - 172.16.1.101
