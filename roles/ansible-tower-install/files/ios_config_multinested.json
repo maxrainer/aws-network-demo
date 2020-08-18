@@ -1,0 +1,65 @@
+{
+    "name": "",
+    "description": "",
+    "spec": [
+        {
+            "question_name": "Classmap name",
+            "question_description": "QoS classmap",
+            "required": true,
+            "type": "text",
+            "variable": "qos_classmap_name",
+            "min": 0,
+            "max": 30,
+            "default": "voicemap",
+            "choices": "",
+            "new_question": true
+        },
+        {
+            "question_name": "Match lines",
+            "question_description": "",
+            "required": true,
+            "type": "textarea",
+            "variable": "qos_classmap_lines",
+            "min": 0,
+            "max": 4096,
+            "default": "match dscp cs7",
+            "choices": "",
+            "new_question": true
+        },
+        {
+            "question_name": "Policy map name",
+            "question_description": "QoS policy name",
+            "required": true,
+            "type": "text",
+            "variable": "qos_policy_map",
+            "min": 0,
+            "max": 30,
+            "default": "foo",
+            "choices": "",
+            "new_question": true
+        },
+        {
+            "question_name": "CIR",
+            "question_description": "QoS commited information rate",
+            "required": true,
+            "type": "text",
+            "variable": "qos_cir",
+            "min": 2,
+            "max": 9,
+            "default": "64000",
+            "choices": "",
+            "new_question": true
+        },
+        {
+            "question_name": "Policer actions",
+            "question_description": "QoS policer lines",
+            "required": true,
+            "type": "textarea",
+            "variable": "qos_policer_lines",
+            "min": 0,
+            "max": 4096,
+            "default": "conform-action transmit\nexceed-action drop",
+            "choices": ""
+        }
+    ]
+}

@@ -2,7 +2,7 @@
 
 - name: customize job templates
   tower_job_template:
-    tower_host: "{{ ansible_host }}"
+    tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
     validate_certs: no

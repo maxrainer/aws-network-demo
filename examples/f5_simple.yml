@@ -1,6 +1,6 @@
 ---
 
-ec2_lab_count: 23
+ec2_lab_count: 51
 ec2_feature_server: true
 ec2_feature_firewall: true
 
@@ -8,7 +8,7 @@ ec2_vpc_subnets:
   - "172.16.0.0/24"
 
 ec2_linux_server:
-  - "{{ ec2_linux_server_tower }}"
+#  - "{{ ec2_linux_server_tower }}"
   - name: Apache Webserver 1
     short: web1
     instance_type: centos7

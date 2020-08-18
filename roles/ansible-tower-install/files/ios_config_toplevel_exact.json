@@ -1,0 +1,30 @@
+{
+    "name": "",
+    "description": "",
+    "spec": [
+        {
+            "question_name": "include argument",
+            "question_description": "show running-config | include param",
+            "required": true,
+            "type": "textarea",
+            "variable": "top_level_exact_include",
+            "min": 0,
+            "max": 4096,
+            "default": "ip http",
+            "choices": "",
+            "new_question": true
+        },
+        {
+            "question_name": "Config lines",
+            "question_description": "top level config lines",
+            "required": true,
+            "type": "textarea",
+            "variable": "top_level_exact_lines",
+            "min": 0,
+            "max": 4096,
+            "default": "ip http server\nip http port 3023\nip http authentication local\nno ip http secure-server",
+            "choices": "",
+            "new_question": true
+        }
+    ]
+}

@@ -10,7 +10,7 @@
     
 - name: set CUSTOM_VENV_PATHS on tower
   tower_settings:  
-    tower_host: "{{ ansible_host }}"
+    tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
     validate_certs: no

@@ -1,5 +1,5 @@
 ---
-#ec2_lab_count: 0
+ec2_lab_count: 41
 ec2_feature_server: true
 ec2_feature_router: true
 
@@ -11,7 +11,6 @@ ec2_vpc_subnets:
 
 ec2_linux_server:
   - "{{ ec2_linux_server_tower }}"
- # - "{{ ec2_linux_server_bastion }}"
   - name: tiny RHEL
     short: rhel001
     instance_type: rhel8

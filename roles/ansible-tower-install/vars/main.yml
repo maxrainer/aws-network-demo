@@ -11,6 +11,18 @@ __tower_projects:
     scm_url: https://github.com/maxrainer/ansible-network-labs.git
     descripion: Network Labs for PoC and Workshops
     scm_clean: yes
+  - name: Network Demo Resource Modules
+    scm_url: https://github.com/maxrainer/ansible-demo-resource-modules.git
+    description: Network Demo with Resource Modules
+    scm_clean: yes
+  - name: Network Demo Config Examples
+    scm_url: https://github.com/maxrainer/ansible-demo-net-config.git
+    description: Network Demo simple config examples 
+    scm_clean: yes
+  - name: Network Demo SoT
+    description: Network SoT for VIRL
+    scm_url: https://github.com/maxrainer/net-demo-data.git
+    scm_clean: yes
 
 __tower_credentials:
   - name: aws 
@@ -25,13 +37,18 @@ __tower_credentials:
     username: centos
     kind: ssh
     ssh_key_data: "{{ lookup('file', tower_pem_key, errors='warn') }}"
-#  no kind available for GitHub Access Token
-#  - name: github access token
-
+  - name: virl_cisco
+    username: cisco
+    password: cisco123
+    become_password: cisco123
+    kind: ssh
 
 __tower_inventories: 
   - name: aws net-demo
     description: dynamic inventory from AWS EC2 
+  - name: KVM VIRL
+    description: VIRL on KVM
+    variables: "{{ lookup('file', role_path+'/files/inventory_kvm_virl.yml') }}"
 
 __tower_inventory_sources:
   - name: ec2 net-demo
@@ -42,6 +59,12 @@ __tower_inventory_sources:
     inventory: aws net-demo
     overwrite: yes
     update_on_launch: yes
+  - name: VIRL github SoT
+    source: scm
+    source_project: Network Demo SoT
+    source_path: virl1.yaml.yml
+    overwrite: yes
+    inventory: KVM VIRL
 
 __tower_groups:
   - name: function_router
@@ -145,4 +168,53 @@ __tower_job_template:
     playbook: aws-webserver.yml
     job_type: run
     credential: centos
-
+  - name: IOS CONFIG top level line
+    description: match line in toplevel config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: toplevel
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_toplevel_lines.json') }}"
+  - name: IOS CONFIG top level exact match
+    description: match exact part in toplevel with running_config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: toplevelexact
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_toplevel_exact.json') }}"
+  - name: IOS CONFIG interface line(s)
+    description: match lines in nested interface config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: nested
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_nested_lines.json') }}"
+  - name: IOS CONFIG interface config (exact)
+    description: exact nested interface config (defaults interface before change)
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: nestedexact
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_nested_lines.json') }}"
+  - name: IOS CONFIG QoS config
+    description: multi nested QoS config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: multinested
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_multinested.json') }}"

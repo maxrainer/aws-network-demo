@@ -3,20 +3,21 @@
 
 - name: customize inventories
   tower_inventory:
-    tower_host: "{{ ansible_host }}"
+    tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
     validate_certs: no
     organization: Default
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
+    variables: "{{ item.variables | default(omit) }}"
   loop: "{{ __tower_inventories }}"
   loop_control:
     label: "{{ item.name }}"
 
 - name: customize inventory sources
   tower_inventory_source:
-    tower_host: "{{ ansible_host }}"
+    tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
     validate_certs: no
@@ -35,7 +36,7 @@
 
 - name: customize inventory groups
   tower_group: 
-    tower_host: "{{ ansible_host }}"
+    tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
     validate_certs: no

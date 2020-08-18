@@ -1,0 +1,30 @@
+{
+    "name": "",
+    "description": "",
+    "spec": [
+        {
+            "question_name": "Interface name",
+            "question_description": "nested interface name",
+            "required": true,
+            "type": "text",
+            "variable": "nested_intf_name",
+            "min": 2,
+            "max": 50,
+            "default": "Loopback2",
+            "choices": "",
+            "new_question": true
+        },
+        {
+            "question_name": "Configuration",
+            "question_description": "nested interface configuration lines",
+            "required": true,
+            "type": "textarea",
+            "variable": "nested_intf_lines",
+            "min": 0,
+            "max": 4096,
+            "default": "description ANSIBLE CONFIGURED\nip address 10.199.199.1 255.255.255.255",
+            "choices": "",
+            "new_question": true
+        }
+    ]
+}
