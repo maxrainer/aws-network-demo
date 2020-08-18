@@ -10,6 +10,9 @@
       server: "{{ ansible_host }}"
     commands: "modify auth user admin password {{ aws_f5_password }}"
     warn: no
+  retries: 10
+  delay: 30
+  until: _f5_password is not failed
   register: _f5_password
 
 - name: save F5 sys config 
