@@ -1,3 +1,0 @@
----
-connection: network_cli
-hostname: '{{ inventory_hostname }}'

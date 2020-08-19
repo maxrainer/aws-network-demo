@@ -1,7 +1,7 @@
 ---
 
 - name: customize job templates
-  tower_job_template:
+  awx.awx.tower_job_template:
     tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
@@ -19,6 +19,7 @@
 #    custom_virtualenv: "{{ item.custom_virtualenv | default(omit) }}"
     survey_spec: "{{ item.survey_spec | default(omit) }}"
     survey_enabled: "{{ item.survey_enabled | default(omit) }}"
+    extra_vars: "{{ item.extra_vars | default(omit) }}"
   loop: "{{ __tower_job_template }}"
   register: _template_result 
   until: _template_result is not failed

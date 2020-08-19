@@ -42,6 +42,7 @@ tower_backup_file: /tmp/tower-backup-restore-ansible.tar.gz
 tower_backup_dest: /tmp/
 
 tower_github_personal_access_token: ""
+tower_github_token: ""
 
 aws_f5_license: ""
 aws_f5_password: ""
