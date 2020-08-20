@@ -1,5 +1,4 @@
 ---
-# inventories.yml
 
 - name: customize inventories
   tower_inventory:
@@ -7,7 +6,7 @@
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
     validate_certs: no
-    organization: Default
+    organization: "Default"
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
     variables: "{{ item.variables | default(omit) }}"
@@ -16,7 +15,7 @@
     label: "{{ item.name }}"
 
 - name: customize inventory sources
-  tower_inventory_source:
+  awx.awx.tower_inventory_source:
     tower_host: "https://{{ ansible_host }}"
     tower_username: admin
     tower_password: "{{ tower_setup_admin_password }}"
@@ -47,3 +46,18 @@
   loop: "{{ __tower_groups }}"
   loop_control:
     label: "{{ item.name }}"
+
+- name: customize inventory hosts
+  awx.awx.tower_host:
+    tower_host: "https://{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+    variables: "{{ item.variables | default(omit) }}"
+    inventory: "{{ item.inventory}}"
+  loop: "{{ __tower_hosts }}"
+  loop_control:
+    label: "{{ item.name }}"
+    

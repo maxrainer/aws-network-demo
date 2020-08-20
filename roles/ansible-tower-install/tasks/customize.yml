@@ -11,3 +11,6 @@
 
 - name: job template
   include_tasks: "{{ role_path }}/includes/job_template.yml"
+
+- name: worflow jobs
+  include_tasks: "{{ role_path }}/includes/workflow_template.yml"

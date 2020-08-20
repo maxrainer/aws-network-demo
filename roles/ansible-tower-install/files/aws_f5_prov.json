@@ -1,0 +1,23 @@
+{
+    "ec2_feature_firewall": true,
+    "ec2_vpc_subnets": [
+     "172.16.0.0/24"
+    ],
+    "ec2_firewalls": [
+     {
+      "name": "F5 Loadbalancer",
+      "short": "f5",
+      "instance_type": "f5",
+      "networks": [
+       {
+        "subnet": 0,
+        "address": "172.16.0.100"
+       }
+      ],
+      "public_ip": "yes",
+      "tags": {
+       "Function": "loadbalancer"
+      }
+     }
+    ]
+}

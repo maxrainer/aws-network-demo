@@ -1,0 +1,41 @@
+---
+
+- include_vars: "{{ role_path }}/vars/workflows.yml"
+
+- name: customize workflow templates
+  awx.awx.tower_workflow_job_template:
+    tower_host: "https://{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+    survey: "{{ item.survey | default(omit) }}"
+    survey_enabled: "{{ item.survey_enabled | default(omit) }}"
+  loop: "{{ __tower_workflow_template }}"
+  register: _template_result 
+  until: _template_result is not failed
+  delay: 5
+  retries: 12
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: customize workflow nodes
+  awx.awx.tower_workflow_job_template_node:
+    tower_host: "https://{{ ansible_host }}"
+    tower_username: admin
+    tower_password: "{{ tower_setup_admin_password }}"
+    validate_certs: no
+    identifier: "{{ item.identifier }}"
+    workflow: "{{ item.workflow }}"
+    unified_job_template: "{{ item.unified_job_template | default(omit) }}"
+    success_nodes: "{{ item.success_nodes | default(omit) }}"
+    failure_nodes: "{{ item.failure_nodes | default(omit) }}"
+    always_nodes: "{{ item.always_nodes | default(omit) }}"
+  loop: "{{ __tower_workflow_node }}"
+  register: _template_result 
+  until: _template_result is not failed
+  delay: 5
+  retries: 12
+  loop_control:
+    label: "{{ item.identifier }}"

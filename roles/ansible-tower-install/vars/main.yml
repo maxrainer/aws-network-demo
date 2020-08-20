@@ -23,6 +23,9 @@ __tower_projects:
     description: Network SoT for VIRL
     scm_url: https://github.com/maxrainer/net-demo-data.git
     scm_clean: yes
+  - name: AWS provision network demo
+    description: setup network demo on AWS cloud
+    scm_url: https://github.com/maxrainer/aws-network-demo.git
 
 __tower_credentials:
   - name: aws 
@@ -42,6 +45,9 @@ __tower_credentials:
     password: cisco123
     become_password: cisco123
     kind: ssh
+  - name: aws_vault_file
+    kind: vault
+    vault_password: "{{ tower_aws_vault_password }}"
 
 __tower_inventories: 
   - name: aws net-demo
@@ -49,6 +55,8 @@ __tower_inventories:
   - name: KVM VIRL
     description: VIRL on KVM
     variables: "{{ lookup('template', role_path+'/templates/inventory_kvm_virl.yml.j2') }}"
+  - name: localhost
+    description: localhost only
 
 __tower_inventory_sources:
   - name: ec2 net-demo
@@ -79,6 +87,10 @@ __tower_groups:
     inventory: aws net-demo
     description: needed as webserver to connect 
     variables: "{{ lookup('file', role_path+'/files/function_webserver_vars.yml') }}"
+
+__tower_hosts:
+  - name: localhost
+    inventory: localhost
 
 __tower_job_template:
   - name: IOS Interface L3 Configuration
@@ -134,7 +146,7 @@ __tower_job_template:
     job_tags: genie
     survey_enabled: yes
     survey_spec: "{{ lookup('file', role_path+'/files/ios_cmd_parser_survey.json') }}"
-#    custom_virtualenv: "{{ __tower_venv_path }}/genie"
+    custom_virtualenv: "{{ __tower_venv_path }}/genie"
   - name: F5 Big-IP handle license
     description: install, revoke license
     inventory: aws net-demo
@@ -238,3 +250,30 @@ __tower_job_template:
     credential: virl_cisco
     job_type: run
     playbook: device_push_intf.yml
+  - name: AWS EC2 001 - F5 only setup
+    description: one network, F5 loadbalancer, public IP
+    inventory: localhost
+    project: AWS provision network demo
+    job_type: run
+    credential: aws
+    playbook: provision.yml
+    extra_vars: "{{ lookup('file', role_path+'/files/aws_f5_prov.json') }}"
+  - name: AWS EC2 002 - post provisioning instances
+    description: DNS, tower, user/pwd settings
+    inventory: localhost
+    credentials: 
+      - aws
+      - centos
+      - aws_vault_file
+    project: AWS provision network demo
+    job_type: run
+    playbook: post.yml
+  - name: AWS EC2 999 - teardown net demo
+    description: teardown net-demo EC2 and VPC
+    inventory: localhost
+    project: AWS provision network demo
+    job_type: run
+    credential: aws
+    playbook: provision.yml
+    job_tags: teardown
+    skip_tags: always

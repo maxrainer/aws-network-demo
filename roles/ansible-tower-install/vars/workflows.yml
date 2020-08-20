@@ -1,0 +1,32 @@
+---
+# workflows.yml
+
+__tower_workflow_template:
+  - name: WF 001 - AWS F5 demo provisioning
+    description: provisioning and postprov F5 demo on AWS
+    survey: "{{ lookup('file', role_path+'/files/aws_lab_count.json') }}"
+    survey_enabled: yes
+  
+__tower_workflow_node:
+# WF 001 - AWS F5 demo provisioning
+  - identifier: teardown-f5-net-demo
+    workflow: WF 001 - AWS F5 demo provisioning
+    unified_job_template: AWS EC2 999 - teardown net demo
+  - identifier: post-prov-f5-net-demo
+    workflow: WF 001 - AWS F5 demo provisioning
+    unified_job_template: AWS EC2 002 - post provisioning instances
+    failure_nodes:
+      - teardown-f5-net-demo
+  - identifier: update-inv-f5-ec2-net-demo
+    workflow: WF 001 - AWS F5 demo provisioning
+    unified_job_template: ec2 net-demo
+    success_nodes: 
+      - post-prov-f5-net-demo
+  - identifier: aws-f5-prov
+    workflow: WF 001 - AWS F5 demo provisioning
+    unified_job_template: AWS EC2 001 - F5 only setup
+    success_nodes:
+      - update-inv-f5-ec2-net-demo
+    failure_nodes: 
+      - teardown-f5-net-demo
+    

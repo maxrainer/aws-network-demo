@@ -13,10 +13,11 @@
     project: "{{ item.project | default(omit) }}"
     playbook: "{{ item.playbook | default(omit) }}"
     credential: "{{ item.credential | default(omit) }}"
+    credentials: "{{ item.credentials | default(omit) }}"
     job_tags: "{{ item.job_tags | default(omit) }}"
     skip_tags: "{{ item.skip_tags | default(omit) }}"
     verbosity: "{{ item.verbosity | default(omit) }}"
-#    custom_virtualenv: "{{ item.custom_virtualenv | default(omit) }}"
+    custom_virtualenv: "{{ item.custom_virtualenv | default(omit) }}"
     survey_spec: "{{ item.survey_spec | default(omit) }}"
     survey_enabled: "{{ item.survey_enabled | default(omit) }}"
     extra_vars: "{{ item.extra_vars | default(omit) }}"
@@ -27,4 +28,9 @@
   retries: 12
   loop_control:
     label: "{{ item.name }}"
+
+- name: job template results
+  debug: 
+    var: _template_result
+    verbosity: 2
   
