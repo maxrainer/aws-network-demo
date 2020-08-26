@@ -1,0 +1,20 @@
+__tower_projects: 
+  - name: network-lab
+    scm_url: https://github.com/maxrainer/ansible-network-labs.git
+    descripion: Network Labs for PoC and Workshops
+    scm_clean: yes
+  - name: Network Demo Resource Modules
+    scm_url: https://github.com/maxrainer/ansible-demo-resource-modules.git
+    description: Network Demo with Resource Modules
+    scm_clean: yes
+  - name: Network Demo Config Examples
+    scm_url: https://github.com/maxrainer/ansible-demo-net-config.git
+    description: Network Demo simple config examples 
+    scm_clean: yes
+  - name: Network Demo SoT
+    description: Network SoT for VIRL
+    scm_url: https://github.com/maxrainer/net-demo-data.git
+    scm_clean: yes
+  - name: AWS provision network demo
+    description: setup network demo on AWS cloud
+    scm_url: https://github.com/maxrainer/aws-network-demo.git

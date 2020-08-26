@@ -1,5 +1,7 @@
 ---
 
+- include_vars: "{{ role_path }}/vars/templates.yml"
+
 - name: customize job templates
   awx.awx.tower_job_template:
     tower_host: "https://{{ ansible_host }}"

@@ -1,0 +1,185 @@
+__tower_job_template:
+  - name: IOS Interface L3 Configuration
+    description: sets admin status, ipv4 address, description
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab 
+    playbook: aws_router.yml
+    credential: cisco ec2
+    job_tags: interface
+  - name: IOS Interface L3 Rollback 
+    description: reset Interfaces to default configuration
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws_router.yml 
+    credential: cisco ec2
+    job_tags: rollback, interface
+    skip_tags: config
+  - name: IOS Router BGP Configuration 
+    description: Cisco Router WAN BGP configuration 
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab 
+    playbook: aws_router.yml
+    credential: cisco ec2
+    job_tags: bgp
+  - name: IOS Router BGP rollback
+    description: Cisco Router WAN BGP configuration 
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab 
+    playbook: aws_router.yml
+    credential: cisco ec2
+    job_tags: bgp,rollback
+    skip_tags: config
+  - name: IOS Router facts 
+    description: gather facts and debug output them
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws_router.yml 
+    credential: cisco ec2
+    job_tags: facts
+    verbosity: 2
+  - name: IOS show command parser
+    description: structured output for IOS commands (genie parser)
+    job_type: run
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws_router.yml 
+    credential: cisco ec2
+    job_tags: genie
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_cmd_parser_survey.json') }}"
+    custom_virtualenv: "{{ __tower_venv_path }}/genie"
+  - name: F5 Big-IP handle license
+    description: install, revoke license
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-f5.yml
+    job_tags: license
+    job_type: run
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/f5_license_survey.json') }}"
+  - name: F5 Big-IP gather facts
+    description: get facts from a list
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-f5.yml
+    job_tags: facts
+    job_type: run
+    survey_enabled: yes
+    verbosity: 2
+    survey_spec: "{{ lookup('file', role_path+'/files/f5_facts_survey.json') }}"
+  - name: F5 Big-IP load balance webservers
+    description: get facts from a list
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-f5.yml
+    job_tags: balance
+    job_type: run
+  - name: provisioning webservers
+    description: apache and default website
+    inventory: aws net-demo
+    project: network-lab
+    playbook: aws-webserver.yml
+    job_type: run
+    credential: centos
+  - name: IOS CONFIG 001 - top level line
+    description: match line in toplevel config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: toplevel
+    ask_limit: yes
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_toplevel_lines.json') }}"
+  - name: IOS CONFIG 002 - top level exact match
+    description: match exact part in toplevel with running_config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: toplevelexact
+    ask_limit: yes
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_toplevel_exact.json') }}"
+  - name: IOS CONFIG 003 - interface line(s)
+    description: match lines in nested interface config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: nested
+    ask_limit: yes
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_nested_lines.json') }}"
+  - name: IOS CONFIG 004 - interface config (exact)
+    description: exact nested interface config (defaults interface before change)
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: nestedexact
+    ask_limit: yes
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_nested_lines.json') }}"
+  - name: IOS CONFIG 005 - QoS config
+    description: multi nested QoS config
+    inventory: KVM VIRL
+    project: Network Demo Config Examples
+    credential: virl_cisco
+    job_type: run
+    playbook: ios-config.yml
+    job_tags: multinested
+    ask_limit: yes
+    survey_enabled: yes
+    survey_spec: "{{ lookup('file', role_path+'/files/ios_config_multinested.json') }}"
+  - name: IOS RM 001 - learn from network
+    description: read network resources and push to GitHub SoT
+    inventory: KVM VIRL
+    project: Network Demo Resource Modules
+    credential: virl_cisco
+    job_type: run
+    playbook: device_pull_facts.yml
+    extra_vars: "{{ lookup('file', role_path+'/files/sot_dir.json') }}"
+  - name: IOS RM 002 - push intf config
+    description: push interface and VLAN config to devices
+    inventory: KVM VIRL
+    project: Network Demo Resource Modules
+    credential: virl_cisco
+    job_type: run
+    playbook: device_push_intf.yml
+  - name: AWS EC2 001 - F5 only setup
+    description: one network, F5 loadbalancer, public IP
+    inventory: localhost
+    project: AWS provision network demo
+    job_type: run
+    credential: aws
+    playbook: provision.yml
+    extra_vars: "{{ lookup('file', role_path+'/files/aws_f5_prov.json') }}"
+  - name: AWS EC2 002 - post provisioning instances
+    description: DNS, tower, user/pwd settings
+    inventory: aws net-demo
+    credentials: 
+      - aws
+      - centos
+      - aws_vault_file
+    project: AWS provision network demo
+    job_type: run
+    playbook: post.yml
+  - name: AWS EC2 999 - teardown net demo
+    description: teardown net-demo EC2 and VPC
+    inventory: localhost
+    project: AWS provision network demo
+    job_type: run
+    credential: aws
+    playbook: provision.yml
+    job_tags: teardown
+    skip_tags: always

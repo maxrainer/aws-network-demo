@@ -1,0 +1,42 @@
+__tower_inventories: 
+  - name: aws net-demo
+    description: dynamic inventory from AWS EC2 
+  - name: KVM VIRL
+    description: VIRL on KVM
+    variables: "{{ lookup('template', role_path+'/templates/inventory_kvm_virl.yml.j2') }}"
+  - name: localhost
+    description: localhost only
+
+__tower_inventory_sources:
+  - name: ec2 net-demo
+    source: scm
+    source_project: network-lab
+    credential: aws
+    source_path: lab.aws_ec2.yml
+    inventory: aws net-demo
+    overwrite: yes
+    update_on_launch: yes
+  - name: VIRL github SoT
+    source: scm
+    source_project: Network Demo SoT
+    source_path: virl1.yaml.yml
+    overwrite: yes
+    inventory: KVM VIRL
+
+__tower_groups:
+  - name: function_router
+    inventory: aws net-demo
+    description: Cisco IOS Router 
+    variables: "{{ lookup('file', role_path+'/files/function_router_vars.yml') }}"
+  - name: function_loadbalancer
+    inventory: aws net-demo 
+    description: F5 Big-IP 
+    variables: "{{ lookup('template', role_path+'/templates/function_loadbalancer_vars.yml.j2') }}"
+  - name: function_webserver
+    inventory: aws net-demo
+    description: needed as webserver to connect 
+    variables: "{{ lookup('file', role_path+'/files/function_webserver_vars.yml') }}"
+
+__tower_hosts:
+  - name: localhost
+    inventory: localhost

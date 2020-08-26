@@ -1,5 +1,7 @@
 ---
 
+- include_vars: "{{ role_path }}/vars/projects.yml"
+
 - name: "install GitHub projects"
   tower_project: 
     tower_host: "https://{{ ansible_host }}"

@@ -1,5 +1,7 @@
 ---
 
+- include_vars: "{{ role_path }}/vars/inventory.yml"
+
 - name: customize inventories
   tower_inventory:
     tower_host: "https://{{ ansible_host }}"

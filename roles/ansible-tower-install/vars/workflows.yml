@@ -6,6 +6,10 @@ __tower_workflow_template:
     description: provisioning and postprov F5 demo on AWS
     survey: "{{ lookup('file', role_path+'/files/aws_lab_count.json') }}"
     survey_enabled: yes
+  - name: WF 002 - RM SoT to device intf
+    description: provisioning and postprov F5 demo on AWS
+    webhook_service: github
+    webhook_credential: "{{ tower_github_token }}"
   
 __tower_workflow_node:
 # WF 001 - AWS F5 demo provisioning
@@ -29,4 +33,19 @@ __tower_workflow_node:
       - update-inv-f5-ec2-net-demo
     failure_nodes: 
       - teardown-f5-net-demo
+# WF 002 - RM SoT to device intf
+  - identifier: ios-rm-002
+    workflow: WF 002 - RM SoT to device intf
+    unified_job_template: IOS RM 002 - push intf config
+  - identifier: update-inv-virl-github
+    workflow: WF 002 - RM SoT to device intf
+    unified_job_template: VIRL github SoT
+    success_nodes:
+      - ios-rm-002
+  - identifier: update-project-demo-sot
+    workflow: WF 002 - RM SoT to device intf
+    unified_job_template: Network Demo SoT
+    success_nodes:
+      - update-inv-virl-github
+
     

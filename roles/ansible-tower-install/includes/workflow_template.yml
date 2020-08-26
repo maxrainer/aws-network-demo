@@ -12,11 +12,13 @@
     description: "{{ item.description | default(omit) }}"
     survey: "{{ item.survey | default(omit) }}"
     survey_enabled: "{{ item.survey_enabled | default(omit) }}"
+    webhook_service: "{{ item.webhook_service | default(omit) }}"
+    webhook_credentials: "{{ item.webhook_credentials | default(omit) }}"
   loop: "{{ __tower_workflow_template }}"
   register: _template_result 
   until: _template_result is not failed
   delay: 5
-  retries: 12
+  retries: 5
   loop_control:
     label: "{{ item.name }}"
 
@@ -36,6 +38,6 @@
   register: _template_result 
   until: _template_result is not failed
   delay: 5
-  retries: 12
+  retries: 5
   loop_control:
     label: "{{ item.identifier }}"
